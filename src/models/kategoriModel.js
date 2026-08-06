@@ -6,18 +6,18 @@ const getAllKategori = () => {
 }
 
 const createNewKategori = (body) => {
-    const SQLQuery = `INSERT INTO kategori_layanan (nama_kategori) VALUES (?)`;
-    return dbPool.execute(SQLQuery, [body.nama_kategori]);
+    const SQLQuery = `INSERT INTO kategori_layanan (kategori_layanan) VALUES (?)`;
+    return dbPool.execute(SQLQuery, [body.kategori_layanan]);
 } 
 
-const updateKategori = (body, idKategori) => {
-    const SQLQuery = `UPDATE kategori_layanan SET nama_kategori=? WHERE id=?`;
-    return dbPool.execute(SQLQuery, [body.nama_kategori, idKategori]);
+const updateKategori = (body, idkategori) => {
+    const SQLQuery = `UPDATE kategori_layanan SET kategori_layanan=? WHERE id=?`;
+    return dbPool.execute(SQLQuery, [body.kategori_layanan, idkategori]);
 }
 
-const deleteKategori = (idKategori) => {
+const deleteKategori = (idkategori) => {
     const SQLQuery = `DELETE FROM kategori_layanan WHERE id=?`;
-    return dbPool.execute(SQLQuery, [idKategori]);
+    return dbPool.execute(SQLQuery, [idkategori]);
 }
 
 module.exports = {

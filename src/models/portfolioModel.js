@@ -1,33 +1,33 @@
 const dbPool = require('../config/database');
 
 const getAllPortfolio = () => {
-    const SQLQuery = `  SELECT portfolio.*, kategori_layanan.nama_kategori 
+    const SQLQuery = `  SELECT portfolio.*, kategori_layanan.kategori_layanan
                         FROM portfolio 
-                        JOIN kategori_layanan ON portfolio.kategori_id = kategori_layanan.id`;
+                        JOIN kategori_layanan ON portfolio.kategori = idkategori_layanan`;
     return dbPool.execute(SQLQuery);
 }
 
 const createNewPortfolio = (body) => {
-    const SQLQuery = `  INSERT INTO portfolio (nama_proyek, lokasi, kategori_id, tahun, deskripsi, image_url) 
+    const SQLQuery = `  INSERT INTO portfolio (nama_proyek, lokasi, kategori, tahun, deskripsi, image_url) 
                         VALUES (?, ?, ?, ?, ?, ?)`;
-    const values = [body.nama_proyek, body.lokasi, body.kategori_id, body.tahun, body.deskripsi, body.image_url];
+    const values = [body.nama_proyek, body.lokasi, body.kategori, body.tahun, body.deskripsi, body.image_url];
     
     return dbPool.execute(SQLQuery, values);
 } 
 
-const updatePortfolio = (body, idPortfolio) => {
+const updatePortfolio = (body, idportfolio) => {
     const SQLQuery = `  UPDATE portfolio 
-                        SET nama_proyek=?, lokasi=?, kategori_id=?, tahun=?, deskripsi=?, image_url=? 
+                        SET nama_proyek=?, lokasi=?, kategori=?, tahun=?, deskripsi=?, image_url=? 
                         WHERE id=?`;
-    const values = [body.nama_proyek, body.lokasi, body.kategori_id, body.tahun, body.deskripsi, body.image_url, idPortfolio];
+    const values = [body.nama_proyek, body.lokasi, body.kategori, body.tahun, body.deskripsi, body.image_url, idportfolio];
     
     return dbPool.execute(SQLQuery, values);
 }
 
-const deletePortfolio = (idPortfolio) => {
+const deletePortfolio = (idportfolio) => {
     const SQLQuery = `DELETE FROM portfolio WHERE id=?`;
     
-    return dbPool.execute(SQLQuery, [idPortfolio]);
+    return dbPool.execute(SQLQuery, [idportfolio]);
 }
 
 module.exports = {

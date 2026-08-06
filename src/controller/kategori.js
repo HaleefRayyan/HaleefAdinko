@@ -1,8 +1,8 @@
-const kategori = require('../models/kategoriModel');
+const kategoriModel = require('../models/kategoriModel');
 
 const getKategori = async (req, res) => {
     try {
-        const [data] = await kategori.getAllKategori();
+        const [data] = await kategoriModel.getAllKategori();
         res.status(200).json({
             message: "Get all kategori success",
             data: data
@@ -18,7 +18,7 @@ const getKategori = async (req, res) => {
 const createNewKategori = async (req, res) => {
     const { body } = req;
     try {
-        await kategori.createNewKategori(body);
+        await kategoriModel.createNewKategori(body);
         res.status(201).json({
             message: "Create new kategori success",
             data: body
@@ -35,7 +35,7 @@ const updateKategori = async (req, res) => {
     const { id } = req.params;
     const { body } = req;
     try {
-        await kategori.updateKategori(body, id);
+        await kategoriModel.updateKategori(body, id);
         res.status(200).json({
             message: "Update kategori success",
             data: {
@@ -54,7 +54,7 @@ const updateKategori = async (req, res) => {
 const deleteKategori = async (req, res) => {
     const { id } = req.params;
     try {
-        await kategori.deleteKategori(id);
+        await kategoriModel.deleteKategori(id);
         res.status(200).json({
             message: "Delete kategori success",
             data: null

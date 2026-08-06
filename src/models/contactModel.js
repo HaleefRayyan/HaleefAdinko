@@ -1,33 +1,33 @@
 const dbPool = require('../config/database');
 
 const getAllContacts = () => {
-    const SQLQuery = `  SELECT contacts.*, kategori_layanan.nama_kategori 
-                        FROM contacts 
-                        JOIN kategori_layanan ON contacts.kategori_id = kategori_layanan.id`;
+    const SQLQuery = `  SELECT contact.*, kategori_layanan.kategori_layanan 
+                        FROM contact 
+                        JOIN kategori_layanan ON contact.kategori = idkategori_layanan`;
     return dbPool.execute(SQLQuery);
 }
 
 const createNewContact = (body) => {
-    const SQLQuery = `  INSERT INTO contacts (nama_lengkap, no_hp, lokasi, kategori_id) 
-                        VALUES (?, ?, ?, ?)`;
-    const values = [body.nama_lengkap, body.no_hp, body.lokasi, body.kategori_id];
+    const SQLQuery = `  INSERT INTO contact (nama_lengkap, no_whatsapp, lokasi, keterangan, kategori) 
+                        VALUES (?, ?, ?, ?, ?)`;
+    const values = [body.nama_lengkap, body.no_whatsapp, body.lokasi, body.keterangan, body.kategori];
     
     return dbPool.execute(SQLQuery, values);
 } 
 
-const updateContact = (body, idContact) => {
-    const SQLQuery = `  UPDATE contacts 
-                        SET nama_lengkap=?, no_hp=?, lokasi=?, kategori_id=? 
+const updateContact = (body, idcontact) => {
+    const SQLQuery = `  UPDATE contact 
+                        SET nama_lengkap=?, no_whatsapp=?, lokasi=?, keterangan=?, kategori=? 
                         WHERE id=?`;
-    const values = [body.nama_lengkap, body.no_hp, body.lokasi, body.kategori_id, idContact];
+    const values = [body.nama_lengkap, body.no_whatsapp, body.lokasi, body.kategori, idcontact];
     
     return dbPool.execute(SQLQuery, values);
 }
 
-const deleteContact = (idContact) => {
-    const SQLQuery = `DELETE FROM contacts WHERE id=?`;
+const deleteContact = (idcontact) => {
+    const SQLQuery = `DELETE FROM contact WHERE id=?`;
     
-    return dbPool.execute(SQLQuery, [idContact]);
+    return dbPool.execute(SQLQuery, [idcontact]);
 }
 
 module.exports = {

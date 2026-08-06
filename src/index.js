@@ -5,6 +5,7 @@ const express = require('express');
 const PortfolioRoutes = require('./routes/portfolioRoute');
 const testimoniRoutes = require('./routes/testimoniRoute');
 const contactRoutes = require('./routes/contactRoute');
+const kategoriRoutes = require('./routes/kategoriRoute');
 
 const middlewareLogRequest = require('./middleware/logs');
 const upload = require('./middleware/multer');
@@ -18,7 +19,7 @@ app.use('/assets', express.static('public/images'));
 app.use('/portfolio', PortfolioRoutes);
 app.use('/testimoni', testimoniRoutes);
 app.use('/contact', contactRoutes);
-
+app.use('/kategori', kategoriRoutes);
 
 app.use((err, req, res, next) => {
     res.json({
