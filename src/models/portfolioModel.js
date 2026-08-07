@@ -10,7 +10,8 @@ const getAllPortfolio = () => {
 const createNewPortfolio = (body) => {
     const SQLQuery = `  INSERT INTO portfolio (nama_proyek, lokasi, kategori, tahun, deskripsi, image_url) 
                         VALUES (?, ?, ?, ?, ?, ?)`;
-    const values = [body.nama_proyek, body.lokasi, body.kategori, body.tahun, body.deskripsi, body.image_url];
+    const imagesJSON = JSON.stringify(body.image_url);
+    const values = [body.nama_proyek, body.lokasi, body.kategori, body.tahun, body.deskripsi, imagesJSON];
     
     return dbPool.execute(SQLQuery, values);
 } 
@@ -19,8 +20,9 @@ const updatePortfolio = (body, idportfolio) => {
     const SQLQuery = `  UPDATE portfolio 
                         SET nama_proyek=?, lokasi=?, kategori=?, tahun=?, deskripsi=?, image_url=? 
                         WHERE id=?`;
-    const values = [body.nama_proyek, body.lokasi, body.kategori, body.tahun, body.deskripsi, body.image_url, idportfolio];
-    
+    const imagesJSON = JSON.stringify(body.image_url);
+    const values = [body.nama_proyek, body.lokasi, body.kategori, body.tahun, body.deskripsi, imagesJSON, idportfolio];
+
     return dbPool.execute(SQLQuery, values);
 }
 
