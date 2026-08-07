@@ -1,0 +1,564 @@
+{
+  "openapi": "3.0.3",
+  "info": {
+    "title": "HaleefAdinko API",
+    "version": "1.0.0",
+    "description": "REST API for the HaleefAdinko portfolio, contact, kategori, and testimoni management system."
+  },
+  "servers": [
+    {
+      "url": "http://localhost:3000",
+      "description": "Local development server"
+    }
+  ],
+  "tags": [
+    { "name": "Portfolio", "description": "Manage portfolio projects" },
+    { "name": "Kategori", "description": "Manage service categories (kategori layanan)" },
+    { "name": "Contact", "description": "Manage contact submissions" },
+    { "name": "Testimoni", "description": "Manage client testimonials" }
+  ],
+  "paths": {
+    "/portfolio": {
+      "get": {
+        "tags": ["Portfolio"],
+        "summary": "Get all portfolios",
+        "operationId": "getAllPortfolio",
+        "responses": {
+          "200": {
+            "description": "List of portfolios retrieved successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "message": { "type": "string", "example": "Get all portfolio success" },
+                    "data": { "type": "array", "items": { "$ref": "#/components/schemas/Portfolio" } }
+                  }
+                }
+              }
+            }
+          },
+          "500": { "$ref": "#/components/responses/ServerError" }
+        }
+      },
+      "post": {
+        "tags": ["Portfolio"],
+        "summary": "Create a new portfolio",
+        "operationId": "createNewPortfolio",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": { "$ref": "#/components/schemas/PortfolioInput" }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Portfolio created successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "message": { "type": "string", "example": "Create new portfolio success" },
+                    "data": { "$ref": "#/components/schemas/PortfolioInput" }
+                  }
+                }
+              }
+            }
+          },
+          "500": { "$ref": "#/components/responses/ServerError" }
+        }
+      }
+    },
+    "/portfolio/{id}": {
+      "put": {
+        "tags": ["Portfolio"],
+        "summary": "Update a portfolio",
+        "operationId": "updatePortfolio",
+        "parameters": [{ "$ref": "#/components/parameters/Id" }],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": { "$ref": "#/components/schemas/PortfolioInput" }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Portfolio updated successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "message": { "type": "string", "example": "Update portfolio success" },
+                    "data": { "$ref": "#/components/schemas/Portfolio" }
+                  }
+                }
+              }
+            }
+          },
+          "500": { "$ref": "#/components/responses/ServerError" }
+        }
+      },
+      "delete": {
+        "tags": ["Portfolio"],
+        "summary": "Delete a portfolio",
+        "operationId": "deletePortfolio",
+        "parameters": [{ "$ref": "#/components/parameters/Id" }],
+        "responses": {
+          "200": {
+            "description": "Portfolio deleted successfully",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/DeleteResponse" }
+              }
+            }
+          },
+          "500": { "$ref": "#/components/responses/ServerError" }
+        }
+      }
+    },
+    "/kategori": {
+      "get": {
+        "tags": ["Kategori"],
+        "summary": "Get all kategori layanan",
+        "operationId": "getKategori",
+        "responses": {
+          "200": {
+            "description": "List of kategori retrieved successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "message": { "type": "string", "example": "Get all kategori success" },
+                    "data": { "type": "array", "items": { "$ref": "#/components/schemas/Kategori" } }
+                  }
+                }
+              }
+            }
+          },
+          "500": { "$ref": "#/components/responses/ServerError" }
+        }
+      },
+      "post": {
+        "tags": ["Kategori"],
+        "summary": "Create a new kategori",
+        "operationId": "createNewKategori",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": { "$ref": "#/components/schemas/KategoriInput" }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Kategori created successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "message": { "type": "string", "example": "Create new kategori success" },
+                    "data": { "$ref": "#/components/schemas/KategoriInput" }
+                  }
+                }
+              }
+            }
+          },
+          "500": { "$ref": "#/components/responses/ServerError" }
+        }
+      }
+    },
+    "/kategori/{id}": {
+      "put": {
+        "tags": ["Kategori"],
+        "summary": "Update a kategori",
+        "operationId": "updateKategori",
+        "parameters": [{ "$ref": "#/components/parameters/Id" }],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": { "$ref": "#/components/schemas/KategoriInput" }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Kategori updated successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "message": { "type": "string", "example": "Update kategori success" },
+                    "data": { "$ref": "#/components/schemas/Kategori" }
+                  }
+                }
+              }
+            }
+          },
+          "500": { "$ref": "#/components/responses/ServerError" }
+        }
+      },
+      "delete": {
+        "tags": ["Kategori"],
+        "summary": "Delete a kategori",
+        "operationId": "deleteKategori",
+        "parameters": [{ "$ref": "#/components/parameters/Id" }],
+        "responses": {
+          "200": {
+            "description": "Kategori deleted successfully",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/DeleteResponse" }
+              }
+            }
+          },
+          "500": { "$ref": "#/components/responses/ServerError" }
+        }
+      }
+    },
+    "/contact": {
+      "get": {
+        "tags": ["Contact"],
+        "summary": "Get all contacts",
+        "operationId": "getAllContacts",
+        "responses": {
+          "200": {
+            "description": "List of contacts retrieved successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "message": { "type": "string", "example": "Get all contacts success" },
+                    "data": { "type": "array", "items": { "$ref": "#/components/schemas/Contact" } }
+                  }
+                }
+              }
+            }
+          },
+          "500": { "$ref": "#/components/responses/ServerError" }
+        }
+      },
+      "post": {
+        "tags": ["Contact"],
+        "summary": "Create a new contact submission",
+        "operationId": "createNewContact",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": { "$ref": "#/components/schemas/ContactInput" }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Contact created successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "message": { "type": "string", "example": "Create new contact success" },
+                    "data": { "$ref": "#/components/schemas/ContactInput" }
+                  }
+                }
+              }
+            }
+          },
+          "500": { "$ref": "#/components/responses/ServerError" }
+        }
+      }
+    },
+    "/contact/{id}": {
+      "put": {
+        "tags": ["Contact"],
+        "summary": "Update a contact",
+        "operationId": "updateContact",
+        "parameters": [{ "$ref": "#/components/parameters/Id" }],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": { "$ref": "#/components/schemas/ContactInput" }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Contact updated successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "message": { "type": "string", "example": "Update contact success" },
+                    "data": { "$ref": "#/components/schemas/Contact" }
+                  }
+                }
+              }
+            }
+          },
+          "500": { "$ref": "#/components/responses/ServerError" }
+        }
+      },
+      "delete": {
+        "tags": ["Contact"],
+        "summary": "Delete a contact",
+        "operationId": "deleteContact",
+        "parameters": [{ "$ref": "#/components/parameters/Id" }],
+        "responses": {
+          "200": {
+            "description": "Contact deleted successfully",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/DeleteResponse" }
+              }
+            }
+          },
+          "500": { "$ref": "#/components/responses/ServerError" }
+        }
+      }
+    },
+    "/testimoni": {
+      "get": {
+        "tags": ["Testimoni"],
+        "summary": "Get all testimonials",
+        "operationId": "getAllTestimoni",
+        "responses": {
+          "200": {
+            "description": "List of testimonials retrieved successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "message": { "type": "string", "example": "Get all testimoni success" },
+                    "data": { "type": "array", "items": { "$ref": "#/components/schemas/Testimoni" } }
+                  }
+                }
+              }
+            }
+          },
+          "500": { "$ref": "#/components/responses/ServerError" }
+        }
+      },
+      "post": {
+        "tags": ["Testimoni"],
+        "summary": "Create a new testimonial",
+        "operationId": "createNewTestimoni",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": { "$ref": "#/components/schemas/TestimoniInput" }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Testimonial created successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "message": { "type": "string", "example": "Create new testimoni success" },
+                    "data": { "$ref": "#/components/schemas/TestimoniInput" }
+                  }
+                }
+              }
+            }
+          },
+          "500": { "$ref": "#/components/responses/ServerError" }
+        }
+      }
+    },
+    "/testimoni/{id}": {
+      "put": {
+        "tags": ["Testimoni"],
+        "summary": "Update a testimonial",
+        "operationId": "updateTestimoni",
+        "parameters": [{ "$ref": "#/components/parameters/Id" }],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": { "$ref": "#/components/schemas/TestimoniInput" }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Testimonial updated successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "message": { "type": "string", "example": "Update testimoni success" },
+                    "data": { "$ref": "#/components/schemas/Testimoni" }
+                  }
+                }
+              }
+            }
+          },
+          "500": { "$ref": "#/components/responses/ServerError" }
+        }
+      },
+      "delete": {
+        "tags": ["Testimoni"],
+        "summary": "Delete a testimonial",
+        "operationId": "deleteTestimoni",
+        "parameters": [{ "$ref": "#/components/parameters/Id" }],
+        "responses": {
+          "200": {
+            "description": "Testimonial deleted successfully",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/DeleteResponse" }
+              }
+            }
+          },
+          "500": { "$ref": "#/components/responses/ServerError" }
+        }
+      }
+    }
+  },
+  "components": {
+    "parameters": {
+      "Id": {
+        "name": "id",
+        "in": "path",
+        "required": true,
+        "schema": { "type": "integer" },
+        "description": "Resource ID"
+      }
+    },
+    "responses": {
+      "ServerError": {
+        "description": "Internal server error",
+        "content": {
+          "application/json": {
+            "schema": {
+              "type": "object",
+              "properties": {
+                "message": { "type": "string", "example": "Server Error" },
+                "serverMessage": { "type": "object" }
+              }
+            }
+          }
+        }
+      }
+    },
+    "schemas": {
+      "Kategori": {
+        "type": "object",
+        "properties": {
+          "idkategori_layanan": { "type": "integer", "example": 1 },
+          "kategori_layanan": { "type": "string", "example": "Desain Interior" }
+        }
+      },
+      "KategoriInput": {
+        "type": "object",
+        "required": ["kategori_layanan"],
+        "properties": {
+          "kategori_layanan": { "type": "string", "example": "Desain Interior" }
+        }
+      },
+      "Portfolio": {
+        "type": "object",
+        "properties": {
+          "id": { "type": "integer", "example": 1 },
+          "nama_proyek": { "type": "string", "example": "Renovasi Rumah Minimalis" },
+          "lokasi": { "type": "string", "example": "Jakarta" },
+          "kategori": { "type": "integer", "description": "Foreign key referencing idkategori_layanan", "example": 1 },
+          "kategori_layanan": { "type": "string", "description": "Joined from kategori_layanan table", "example": "Desain Interior" },
+          "tahun": { "type": "integer", "example": 2024 },
+          "deskripsi": { "type": "string", "example": "Proyek renovasi rumah minimalis di Jakarta Selatan." },
+          "image_url": {
+            "type": "array",
+            "items": { "type": "string" },
+            "example": ["https://example.com/img1.jpg", "https://example.com/img2.jpg"]
+          }
+        }
+      },
+      "PortfolioInput": {
+        "type": "object",
+        "required": ["nama_proyek", "lokasi", "kategori", "tahun", "deskripsi", "image_url"],
+        "properties": {
+          "nama_proyek": { "type": "string", "example": "Renovasi Rumah Minimalis" },
+          "lokasi": { "type": "string", "example": "Jakarta" },
+          "kategori": { "type": "integer", "example": 1 },
+          "tahun": { "type": "integer", "example": 2024 },
+          "deskripsi": { "type": "string", "example": "Proyek renovasi rumah minimalis di Jakarta Selatan." },
+          "image_url": {
+            "type": "array",
+            "items": { "type": "string" },
+            "example": ["https://example.com/img1.jpg"]
+          }
+        }
+      },
+      "Contact": {
+        "type": "object",
+        "properties": {
+          "id": { "type": "integer", "example": 1 },
+          "nama_lengkap": { "type": "string", "example": "Budi Santoso" },
+          "no_whatsapp": { "type": "string", "example": "081234567890" },
+          "lokasi": { "type": "string", "example": "Bandung" },
+          "keterangan": { "type": "string", "example": "Ingin konsultasi desain interior ruang tamu." },
+          "kategori": { "type": "integer", "description": "Foreign key referencing idkategori_layanan", "example": 1 },
+          "kategori_layanan": { "type": "string", "description": "Joined from kategori_layanan table", "example": "Desain Interior" }
+        }
+      },
+      "ContactInput": {
+        "type": "object",
+        "required": ["nama_lengkap", "no_whatsapp", "lokasi", "keterangan", "kategori"],
+        "properties": {
+          "nama_lengkap": { "type": "string", "example": "Budi Santoso" },
+          "no_whatsapp": { "type": "string", "example": "081234567890" },
+          "lokasi": { "type": "string", "example": "Bandung" },
+          "keterangan": { "type": "string", "example": "Ingin konsultasi desain interior ruang tamu." },
+          "kategori": { "type": "integer", "example": 1 }
+        }
+      },
+      "Testimoni": {
+        "type": "object",
+        "properties": {
+          "id": { "type": "integer", "example": 1 },
+          "nama_klien": { "type": "string", "example": "Siti Rahayu" },
+          "waktu": { "type": "string", "format": "date", "example": "2024-03-15" },
+          "rating": { "type": "integer", "minimum": 1, "maximum": 5, "example": 5 },
+          "deskripsi": { "type": "string", "example": "Pelayanan sangat memuaskan dan hasil akhirnya luar biasa!" }
+        }
+      },
+      "TestimoniInput": {
+        "type": "object",
+        "required": ["nama_klien", "waktu", "rating", "deskripsi"],
+        "properties": {
+          "nama_klien": { "type": "string", "example": "Siti Rahayu" },
+          "waktu": { "type": "string", "format": "date", "example": "2024-03-15" },
+          "rating": { "type": "integer", "minimum": 1, "maximum": 5, "example": 5 },
+          "deskripsi": { "type": "string", "example": "Pelayanan sangat memuaskan dan hasil akhirnya luar biasa!" }
+        }
+      },
+      "DeleteResponse": {
+        "type": "object",
+        "properties": {
+          "message": { "type": "string", "example": "Delete success" },
+          "data": { "nullable": true, "example": null }
+        }
+      }
+    }
+  }
+}
