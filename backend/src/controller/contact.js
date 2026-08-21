@@ -17,11 +17,21 @@ const getAllContacts = async (req, res) => {
 
 const createNewContact = async (req, res) => {
     const { body } = req;
+    console.log('createNewContact body:', body);
+    const required = ['nama_lengkap', 'no_whatsapp', 'lokasi', 'kategori'];
+    const missing = required.filter(k => !body || body[k] === undefined || body[k] === null || String(body[k]).trim() === '');
+    if (missing.length) {
+        return res.status(400).json({
+            message: 'Missing required fields',
+            missing
+        });
+    }
     try {
-        await contactModel.createNewContact(body);
+        const [result] = await contactModel.createNewContact(body);
+        const insertId = result && result.insertId ? result.insertId : null;
         res.status(201).json({
             message: "Create new contact success",
-            data: body
+            data: insertId ? { id: insertId, ...body } : body
         });
     } catch (error) {
         res.status(500).json({

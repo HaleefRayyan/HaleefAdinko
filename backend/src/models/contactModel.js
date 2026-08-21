@@ -19,7 +19,7 @@ const updateContact = (body, idcontact) => {
     const SQLQuery = `  UPDATE contact 
                         SET nama_lengkap=?, no_whatsapp=?, lokasi=?, keterangan=?, kategori=? 
                         WHERE id=?`;
-    const values = [body.nama_lengkap, body.no_whatsapp, body.lokasi, body.kategori, idcontact];
+    const values = [body.nama_lengkap, body.no_whatsapp, body.lokasi, body.keterangan, body.kategori, idcontact];
     
     return dbPool.execute(SQLQuery, values);
 }

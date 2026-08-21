@@ -1,0 +1,54 @@
+<svg width="120" height="120" viewBox="0 0 120 120" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <!-- Top Gold Arc -->
+  <path d="M 16 42 C 38 14, 78 14, 104 36" stroke="#C5A638" stroke-width="2.5" stroke-linecap="round" />
+  
+  <!-- 4 Sparkle Stars along top right arc -->
+  <g transform="translate(82, 14) scale(0.7)">
+    <path d="M 5 0 L 6 3.5 L 9.5 4.5 L 6 5.5 L 5 9 L 4 5.5 L 0.5 4.5 L 4 3.5 Z" fill="#C5A638" />
+  </g>
+  <g transform="translate(90, 20) scale(0.9)">
+    <path d="M 5 0 L 6 3.5 L 9.5 4.5 L 6 5.5 L 5 9 L 4 5.5 L 0.5 4.5 L 4 3.5 Z" fill="#C5A638" />
+  </g>
+  <g transform="translate(98, 28) scale(1.1)">
+    <path d="M 5 0 L 6 3.5 L 9.5 4.5 L 6 5.5 L 5 9 L 4 5.5 L 0.5 4.5 L 4 3.5 Z" fill="#C5A638" />
+  </g>
+  <g transform="translate(106, 38) scale(1.3)">
+    <path d="M 5 0 L 6 3.5 L 9.5 4.5 L 6 5.5 L 5 9 L 4 5.5 L 0.5 4.5 L 4 3.5 Z" fill="#C5A638" />
+  </g>
+
+  <!-- Bottom Green Arc -->
+  <path d="M 12 72 C 34 104, 82 104, 108 68" stroke="#5FA314" stroke-width="2.5" stroke-linecap="round" />
+
+  <!-- Radial Leaves Group -->
+  <g transform="translate(60, 58)">
+    <!-- Top-Left & Left Green Leaves -->
+    <path d="M0 -34 C -7 -20, -7 -7, 0 0 C 7 -7, 7 -20, 0 -34" fill="#4B8210" transform="rotate(345)" />
+    <path d="M0 -34 C -7 -20, -7 -7, 0 0 C 7 -7, 7 -20, 0 -34" fill="#589B13" transform="rotate(15)" />
+    <path d="M0 -34 C -7 -20, -7 -7, 0 0 C 7 -7, 7 -20, 0 -34" fill="#6BAC18" transform="rotate(45)" />
+    <path d="M0 -34 C -7 -20, -7 -7, 0 0 C 7 -7, 7 -20, 0 -34" fill="#7CBD1C" transform="rotate(75)" />
+    <path d="M0 -34 C -7 -20, -7 -7, 0 0 C 7 -7, 7 -20, 0 -34" fill="#589B13" transform="rotate(105)" />
+    <path d="M0 -34 C -7 -20, -7 -7, 0 0 C 7 -7, 7 -20, 0 -34" fill="#4B8210" transform="rotate(135)" />
+    
+    <!-- Bottom-Right & Right Gold / Ochre Leaves -->
+    <path d="M0 -34 C -7 -20, -7 -7, 0 0 C 7 -7, 7 -20, 0 -34" fill="#A88B2A" transform="rotate(165)" />
+    <path d="M0 -34 C -7 -20, -7 -7, 0 0 C 7 -7, 7 -20, 0 -34" fill="#C5A638" transform="rotate(195)" />
+    <path d="M0 -34 C -7 -20, -7 -7, 0 0 C 7 -7, 7 -20, 0 -34" fill="#D6B84A" transform="rotate(225)" />
+    <path d="M0 -34 C -7 -20, -7 -7, 0 0 C 7 -7, 7 -20, 0 -34" fill="#C5A638" transform="rotate(255)" />
+    <path d="M0 -34 C -7 -20, -7 -7, 0 0 C 7 -7, 7 -20, 0 -34" fill="#A88B2A" transform="rotate(285)" />
+    <path d="M0 -34 C -7 -20, -7 -7, 0 0 C 7 -7, 7 -20, 0 -34" fill="#6BAC18" transform="rotate(315)" />
+  </g>
+
+  <!-- Centered ABIYA Brand Letters across the leaves -->
+  <text 
+    x="60" 
+    y="66" 
+    text-anchor="middle" 
+    fill="#5A4A39" 
+    font-family="'Montserrat', sans-serif" 
+    font-weight="900" 
+    font-size="23" 
+    letter-spacing="7"
+  >
+    ABIYA
+  </text>
+</svg>

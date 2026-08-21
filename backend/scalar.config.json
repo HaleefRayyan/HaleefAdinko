@@ -1,0 +1,28 @@
+{
+  "$schema": "https://cdn.scalar.com/schema/scalar-config-next.json",
+  "scalar": "2.0.0",
+  "info": {
+    "title": "HaleefAdinko"
+  },
+  "siteConfig": {},
+  "navigation": {
+    "routes": { 
+      "/": {
+        "type": "group",
+        "title": "Documentation",
+        "children": {
+          "/install": {
+            "type": "page",
+            "title": "Install",
+            "filepath": "docs/install.md"
+          }
+        }
+      },
+      "/api": {
+        "type": "openapi",
+        "title": "API Reference",
+        "filepath": "docs/openapi.json"
+      }
+    }
+  }
+}
