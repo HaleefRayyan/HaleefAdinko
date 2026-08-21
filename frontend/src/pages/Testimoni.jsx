@@ -26,6 +26,29 @@ const normalizeCategory = (text = '') => {
   return 'Rumput Sintetis';
 };
 
+const formatRelativeTime = (value) => {
+  const date = new Date(value);
+  if (Number.isNaN(date.getTime())) return value || 'Baru-baru ini';
+
+  const elapsedSeconds = Math.floor((Date.now() - date.getTime()) / 1000);
+  const units = [
+    ['tahun', 31536000],
+    ['bulan', 2592000],
+    ['minggu', 604800],
+    ['hari', 86400],
+    ['jam', 3600],
+    ['menit', 60]
+  ];
+
+  for (const [unit, seconds] of units) {
+    if (elapsedSeconds >= seconds) {
+      return `${Math.floor(elapsedSeconds / seconds)} ${unit} yang lalu`;
+    }
+  }
+
+  return 'Baru saja';
+};
+
 export const Testimoni = () => {
   const navigate = useNavigate();
   const [reviews, setReviews] = useState([]);
@@ -43,7 +66,7 @@ export const Testimoni = () => {
         const normalized = data.map((item, index) => ({
           id: item.id || index + 1,
           name: item.nama_klien || 'Klien',
-          time: item.waktu || 'Baru-baru ini',
+          time: formatRelativeTime(item.waktu),
           rating: Number(item.rating) || 5,
           text: item.deskripsi || '',
           avatar: FALLBACK_AVATARS[index % FALLBACK_AVATARS.length],

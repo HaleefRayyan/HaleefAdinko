@@ -28,7 +28,7 @@ export const interactiveFeatures = [
     title: "Hasil Presisi",
     description: "Pemasangan rapi ditangani tim ahli untuk hasil maksimal.",
     icon: "layers",
-    bgImage: "https://images.unsplash.com/photo-1558904541-efa8c4a08931?auto=format&fit=crop&w=800&q=80"
+    bgImage: "https://images.unsplash.com/photo-1585320806297-9794b3e4eeae?auto=format&fit=crop&w=800&q=80"
   },
   {
     id: "002",
@@ -75,7 +75,7 @@ export const servicesData = {
       id: 1,
       title: "Taman rumah",
       category: "Adinko",
-      image: "https://images.unsplash.com/photo-1558904541-efa8c4a08931?auto=format&fit=crop&w=700&q=80"
+      image: "https://images.unsplash.com/photo-1585320806297-9794b3e4eeae?auto=format&fit=crop&w=700&q=80"
     },
     {
       id: 2,
@@ -130,7 +130,7 @@ export const portfolioData = [
     title: "Taman Sintetis Perumahan Elit",
     location: "Tampan, Pekanbaru 2024",
     description: "Taman depan dan belakang rumah dengan rumput sintetis premium, tampak natural, bebas perawatan.",
-    image: "https://images.unsplash.com/photo-1558904541-efa8c4a08931?auto=format&fit=crop&w=800&q=80"
+    image: "https://images.unsplash.com/photo-1585320806297-9794b3e4eeae?auto=format&fit=crop&w=800&q=80"
   },
   {
     id: 2,
@@ -138,7 +138,7 @@ export const portfolioData = [
     title: "Futsal Arena Pekanbaru Pusat",
     location: "Pekanbaru Kota, 2024",
     description: "Lapangan Futsal indoor berstandar profesional dengan vinyl kualitas, marking presisi.",
-    image: "https://images.unsplash.com/photo-1574629810360-7efbbe195018?auto=format&fit=crop&w=800&q=80"
+    image: "https://images.unsplash.com/photo-1579952363873-27f3bade9f55?auto=format&fit=crop&w=800&q=80"
   },
   {
     id: 3,
@@ -170,7 +170,7 @@ export const portfolioData = [
     title: "Stadium Futsal Bukit Raya",
     location: "Bukit Raya, Pekanbaru 2024",
     description: "Pemasangan rumput sintetis lapangan futsal monofilament tebal 50mm dengan rubber infill.",
-    image: "https://images.unsplash.com/photo-1508098682722-e99c43a406b2?auto=format&fit=crop&w=800&q=80"
+    image: "https://images.unsplash.com/photo-1574629810360-7efbbe195018?auto=format&fit=crop&w=800&q=80"
   },
   {
     id: 7,
@@ -186,7 +186,7 @@ export const portfolioData = [
     title: "Lapangan Tenis & Padel Eksklusif",
     location: "Tuah Madani, Pekanbaru 2024",
     description: "Konstruksi lapangan olahraga serbaguna dengan jaring pengaman keliling.",
-    image: "https://images.unsplash.com/photo-1534438327276-14e5300c3a48?auto=format&fit=crop&w=800&q=80"
+    image: "https://images.unsplash.com/photo-1554068865-24cecd4e34b8?auto=format&fit=crop&w=800&q=80"
   },
   {
     id: 9,

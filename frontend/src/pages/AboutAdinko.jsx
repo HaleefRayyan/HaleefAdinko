@@ -9,7 +9,7 @@ export const AboutAdinko = () => {
 
   const playgroundSlides = [
     "https://images.unsplash.com/photo-1589923188900-85dae523342b?auto=format&fit=crop&w=800&q=80",
-    "https://images.unsplash.com/photo-1558904541-efa8c4a08931?auto=format&fit=crop&w=800&q=80",
+    "https://images.unsplash.com/photo-1585320806297-9794b3e4eeae?auto=format&fit=crop&w=800&q=80",
     "https://images.unsplash.com/photo-1584467735815-f778f274e296?auto=format&fit=crop&w=800&q=80"
   ];
 
@@ -22,7 +22,7 @@ export const AboutAdinko = () => {
   };
 
   const solutions = [
-    { title: "Taman rumah", img: "https://images.unsplash.com/photo-1558904541-efa8c4a08931?auto=format&fit=crop&w=600&q=80" },
+    { title: "Taman rumah", img: "https://images.unsplash.com/photo-1585320806297-9794b3e4eeae?auto=format&fit=crop&w=600&q=80" },
     { title: "Dekorasi indoor & outdoor", img: "https://images.unsplash.com/photo-1584467735815-f778f274e296?auto=format&fit=crop&w=600&q=80" },
     { title: "Area komersial (cafe, kantor, dll)", img: "https://images.unsplash.com/photo-1513694203232-719a280e022f?auto=format&fit=crop&w=600&q=80" },
     { title: "Vertical garden", img: "https://images.unsplash.com/photo-1534710961216-75c88202f43e?auto=format&fit=crop&w=600&q=80" }
@@ -33,7 +33,7 @@ export const AboutAdinko = () => {
       {/* 1. HERO SECTION */}
       <section 
         className="hero-wrapper"
-        style={{ backgroundImage: `url('https://images.unsplash.com/photo-1558904541-efa8c4a08931?auto=format&fit=crop&w=1800&q=80')` }}
+        style={{ backgroundImage: `url('https://images.unsplash.com/photo-1585320806297-9794b3e4eeae?auto=format&fit=crop&w=1800&q=80')` }}
       >
         <div className="hero-overlay" />
         <div className="container">
@@ -157,7 +157,7 @@ export const AboutAdinko = () => {
             {/* Left: Image with Nilai Kami Tags */}
             <div style={{ position: 'relative', borderRadius: '24px', overflow: 'hidden', boxShadow: 'var(--shadow-md)' }}>
               <img 
-                src="https://images.unsplash.com/photo-1558904541-efa8c4a08931?auto=format&fit=crop&w=800&q=80" 
+                src="https://images.unsplash.com/photo-1585320806297-9794b3e4eeae?auto=format&fit=crop&w=800&q=80"
                 alt="Instalasi Rumput Sintetis Adinko" 
                 style={{ width: '100%', height: '340px', objectFit: 'cover' }}
               />

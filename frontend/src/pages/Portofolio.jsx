@@ -37,7 +37,7 @@ export const Portofolio = () => {
             location: item.lokasi || 'Lokasi tidak tersedia',
             category: item.kategori_layanan || 'Kategori',
             description: item.deskripsi || '',
-            image: imageUrl || 'https://images.unsplash.com/photo-1558904541-efa8c4a08931?auto=format&fit=crop&w=800&q=80'
+            image: imageUrl || 'https://images.unsplash.com/photo-1585320806297-9794b3e4eeae?auto=format&fit=crop&w=800&q=80'
           };
         });
 
@@ -62,7 +62,7 @@ export const Portofolio = () => {
       {/* 1. HERO SECTION */}
       <section 
         className="hero-wrapper"
-        style={{ backgroundImage: `url('https://images.unsplash.com/photo-1558904541-efa8c4a08931?auto=format&fit=crop&w=1800&q=80')` }}
+        style={{ backgroundImage: `url('https://images.unsplash.com/photo-1585320806297-9794b3e4eeae?auto=format&fit=crop&w=1800&q=80')` }}
       >
         <div className="hero-overlay" />
         <div className="container">

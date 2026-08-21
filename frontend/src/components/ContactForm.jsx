@@ -24,8 +24,13 @@ export const ContactForm = ({ title = "Kirim Pesan Sekarang" }) => {
 
   const handleChange = (e) => {
     const { name, value } = e.target;
-    // ensure kategori is stored as number
-    setFormData(prev => ({ ...prev, [name]: name === 'kategori' ? Number(value) : value }));
+    const nextValue = name === 'kategori'
+      ? Number(value)
+      : name === 'no_whatsapp'
+        ? value.replace(/\D/g, '')
+        : value;
+
+    setFormData(prev => ({ ...prev, [name]: nextValue }));
   };
 
   const handleSubmit = (e) => {
@@ -102,6 +107,9 @@ export const ContactForm = ({ title = "Kirim Pesan Sekarang" }) => {
               type="tel"
               name="no_whatsapp"
               required
+              inputMode="numeric"
+              pattern="[0-9]+"
+              maxLength={15}
               className="form-input"
               placeholder="0822-xxxx-xxxx"
               value={formData.no_whatsapp}

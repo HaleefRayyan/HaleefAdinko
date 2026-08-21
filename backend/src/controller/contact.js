@@ -26,6 +26,12 @@ const createNewContact = async (req, res) => {
             missing
         });
     }
+    if (!/^\d+$/.test(String(body.no_whatsapp))) {
+        return res.status(400).json({
+            message: 'Invalid WhatsApp number',
+            detail: 'no_whatsapp must contain numbers only'
+        });
+    }
     try {
         const [result] = await contactModel.createNewContact(body);
         const insertId = result && result.insertId ? result.insertId : null;
