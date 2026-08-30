@@ -1,84 +1,105 @@
-import React from 'react';
+import React, { useState } from 'react';
 
 export const ProjectCard = ({ project }) => {
   const images = Array.isArray(project.images) && project.images.length > 0
     ? project.images
     : [project.image].filter(Boolean);
 
-  const previewImages = images.slice(0, 4);
+  const [activeIndex, setActiveIndex] = useState(0);
+  const hasMultipleImages = images.length > 1;
 
-  const getGalleryLayout = () => {
-    if (previewImages.length === 1) {
-      return {
-        gridTemplateColumns: '1fr',
-        gridTemplateRows: '1fr',
-        largeIndex: 0,
-        secondaryIndexes: []
-      };
-    }
-
-    if (previewImages.length === 2) {
-      return {
-        gridTemplateColumns: '1.3fr 0.7fr',
-        gridTemplateRows: '1fr',
-        largeIndex: 0,
-        secondaryIndexes: [1]
-      };
-    }
-
-    if (previewImages.length === 3) {
-      return {
-        gridTemplateColumns: '1.3fr 0.7fr',
-        gridTemplateRows: '1fr 1fr',
-        largeIndex: 0,
-        secondaryIndexes: [1, 2]
-      };
-    }
-
-    return {
-      gridTemplateColumns: '1fr 1fr',
-      gridTemplateRows: '1fr 1fr',
-      largeIndex: 0,
-      secondaryIndexes: [1, 2, 3]
-    };
+  const goToPrevious = () => {
+    setActiveIndex((current) => (current === 0 ? images.length - 1 : current - 1));
   };
 
-  const gallery = getGalleryLayout();
+  const goToNext = () => {
+    setActiveIndex((current) => (current === images.length - 1 ? 0 : current + 1));
+  };
+
+  const activeImage = images[activeIndex] || images[0];
 
   return (
     <div className="project-card">
-      <div className="project-img-wrapper" style={{ position: 'relative', overflow: 'hidden' }}>
-        {previewImages.length > 1 ? (
-          <div style={{ display: 'grid', gridTemplateColumns: gallery.gridTemplateColumns, gridTemplateRows: gallery.gridTemplateRows, gap: '8px', height: '260px' }}>
-            <div style={{ position: 'relative', gridRow: previewImages.length === 3 ? '1 / span 2' : '1 / span 1' }}>
-              <img src={previewImages[gallery.largeIndex]} alt={project.title} loading="lazy" style={{ width: '100%', height: '100%', objectFit: 'cover', borderRadius: '16px 0 0 16px' }} />
-            </div>
+      <div className="project-img-wrapper" style={{ position: 'relative', overflow: 'hidden', borderRadius: '18px 18px 0 0' }}>
+        <div style={{ position: 'relative', height: '260px' }}>
+          <img src={activeImage} alt={project.title} loading="lazy" style={{ width: '100%', height: '100%', objectFit: 'cover', display: 'block' }} />
 
-            <div style={{ display: 'grid', gridTemplateRows: previewImages.length === 2 ? '1fr' : 'repeat(2, minmax(0, 1fr))', gap: '8px' }}>
-              {previewImages
-                .filter((_, index) => index !== gallery.largeIndex)
-                .map((image, index, filtered) => (
-                  <div key={`${project.id}-thumb-${index}`} style={{ position: 'relative' }}>
-                    <img
-                      src={image}
-                      alt={`${project.title} ${index + 2}`}
-                      loading="lazy"
-                      style={{ width: '100%', height: '100%', objectFit: 'cover', borderRadius: filtered.length > 1 && index === filtered.length - 1 ? '0 16px 16px 0' : '0 16px 0 0' }}
-                    />
-                    {index === filtered.length - 1 && images.length > previewImages.length && (
-                      <div style={{ position: 'absolute', inset: 0, background: 'rgba(17,24,39,0.55)', color: '#fff', display: 'flex', alignItems: 'center', justifyContent: 'center', fontWeight: 800, fontSize: '1.1rem', borderRadius: '0 16px 16px 0' }}>
-                        +{images.length - previewImages.length}
-                      </div>
-                    )}
-                  </div>
-                ))}
-            </div>
+          {hasMultipleImages && (
+            <>
+              <button
+                type="button"
+                onClick={goToPrevious}
+                aria-label="Previous image"
+                style={{
+                  position: 'absolute',
+                  left: '10px',
+                  top: '50%',
+                  transform: 'translateY(-50%)',
+                  background: 'rgba(17,24,39,0.55)',
+                  border: 'none',
+                  color: '#fff',
+                  width: '30px',
+                  height: '30px',
+                  borderRadius: '50%',
+                  cursor: 'pointer',
+                  fontSize: '1.1rem',
+                  lineHeight: '1'
+                }}
+              >
+                ‹
+              </button>
+
+              <button
+                type="button"
+                onClick={goToNext}
+                aria-label="Next image"
+                style={{
+                  position: 'absolute',
+                  right: '10px',
+                  top: '50%',
+                  transform: 'translateY(-50%)',
+                  background: 'rgba(17,24,39,0.55)',
+                  border: 'none',
+                  color: '#fff',
+                  width: '30px',
+                  height: '30px',
+                  borderRadius: '50%',
+                  cursor: 'pointer',
+                  fontSize: '1.1rem',
+                  lineHeight: '1'
+                }}
+              >
+                ›
+              </button>
+            </>
+          )}
+
+          <span className="project-tag-badge">{project.category}</span>
+        </div>
+
+        {hasMultipleImages && (
+          <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', gap: '6px', padding: '10px 12px 0', background: '#fff' }}>
+            {images.map((_, index) => (
+              <button
+                key={`${project.id}-dot-${index}`}
+                type="button"
+                onClick={() => setActiveIndex(index)}
+                aria-label={`Show slide ${index + 1}`}
+                style={{
+                  width: '8px',
+                  height: '8px',
+                  borderRadius: '50%',
+                  border: 'none',
+                  background: activeIndex === index ? '#1d4d2d' : '#d1d5db',
+                  cursor: 'pointer',
+                  padding: 0
+                }}
+              />
+            ))}
           </div>
-        ) : (
-          <img src={previewImages[0]} alt={project.title} loading="lazy" style={{ width: '100%', height: '260px', objectFit: 'cover', display: 'block' }} />
         )}
-        <span className="project-tag-badge">{project.category}</span>
       </div>
+
       <div className="project-body">
         <h4 className="project-title">{project.title}</h4>
         <div className="project-location-pill">
