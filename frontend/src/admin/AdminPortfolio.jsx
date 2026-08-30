@@ -39,7 +39,17 @@ export const AdminPortfolio = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      await savePortfolio({ ...form }, editingId);
+      const payload = {
+        ...form,
+        image_url: form.image_url
+          ? form.image_url
+              .split(',')
+              .map((item) => item.trim())
+              .filter(Boolean)
+          : []
+      };
+
+      await savePortfolio(payload, editingId);
       setForm(emptyForm);
       setEditingId(null);
       load();

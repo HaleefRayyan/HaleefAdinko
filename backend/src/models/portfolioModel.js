@@ -19,7 +19,7 @@ const createNewPortfolio = (body) => {
 const updatePortfolio = (body, idportfolio) => {
     const SQLQuery = `  UPDATE portfolio 
                         SET nama_proyek=?, lokasi=?, kategori=?, tahun=?, deskripsi=?, image_url=? 
-                        WHERE id=?`;
+                        WHERE idportfolio=?`;
     const imagesJSON = JSON.stringify(body.image_url);
     const values = [body.nama_proyek, body.lokasi, body.kategori, body.tahun, body.deskripsi, imagesJSON, idportfolio];
 
@@ -27,7 +27,7 @@ const updatePortfolio = (body, idportfolio) => {
 }
 
 const deletePortfolio = (idportfolio) => {
-    const SQLQuery = `DELETE FROM portfolio WHERE id=?`;
+    const SQLQuery = `DELETE FROM portfolio WHERE idportfolio=?`;
     
     return dbPool.execute(SQLQuery, [idportfolio]);
 }
