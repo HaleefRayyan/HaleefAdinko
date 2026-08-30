@@ -9,6 +9,17 @@ const ensureUploadDir = () => {
     }
 };
 
+const getPublicBaseUrl = (req) => {
+    const envBaseUrl = process.env.PUBLIC_API_URL || process.env.VITE_API_URL || process.env.BACKEND_URL;
+    if (envBaseUrl) return envBaseUrl.replace(/\/$/, '');
+
+    const protocol = req.protocol || 'http';
+    const host = req.get('host') || 'localhost:4000';
+    return `${protocol}://${host}`;
+};
+
+const toPublicAssetUrl = (req, filename) => `${getPublicBaseUrl(req)}/assets/${filename}`;
+
 const listMedia = async (req, res) => {
     try {
         ensureUploadDir();
@@ -16,7 +27,7 @@ const listMedia = async (req, res) => {
             .filter((name) => !name.startsWith('.'))
             .map((name) => ({
                 name,
-                url: `/assets/${name}`
+                url: toPublicAssetUrl(req, name)
             }));
 
         return res.status(200).json({
@@ -46,7 +57,7 @@ const uploadMedia = async (req, res) => {
             message: 'Upload media success',
             data: {
                 name: req.file.filename,
-                url: `/assets/${req.file.filename}`
+                url: toPublicAssetUrl(req, req.file.filename)
             }
         });
     } catch (error) {

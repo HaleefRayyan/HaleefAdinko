@@ -4,6 +4,29 @@ import { ArrowRight } from 'lucide-react';
 import { ProjectCard } from '../components/ProjectCard';
 import { HeroFloatingBadge } from '../components/FloatingCta';
 
+const normalizeImageList = (value, apiBase) => {
+  if (Array.isArray(value)) {
+    return value.map((item) => item && String(item).trim()).filter(Boolean);
+  }
+
+  if (typeof value !== 'string') return [];
+
+  try {
+    const parsed = JSON.parse(value);
+    if (Array.isArray(parsed)) {
+      return parsed.map((item) => item && String(item).trim()).filter(Boolean);
+    }
+  } catch {
+    // ignore invalid JSON
+  }
+
+  return value
+    .split(',')
+    .map((item) => item && item.trim())
+    .filter(Boolean)
+    .map((item) => (item.startsWith('http') || item.startsWith('data:') ? item : `${apiBase}${item.startsWith('/') ? '' : '/'}${item}`));
+};
+
 export const Portofolio = () => {
   const navigate = useNavigate();
   const [projects, setProjects] = useState([]);
@@ -19,22 +42,7 @@ export const Portofolio = () => {
         const data = Array.isArray(json?.data) ? json.data : [];
 
         const normalized = data.map((item) => {
-          let images = [];
-
-          if (Array.isArray(item.image_url)) {
-            images = item.image_url.filter(Boolean);
-          } else if (typeof item.image_url === 'string') {
-            try {
-              const parsed = JSON.parse(item.image_url);
-              images = Array.isArray(parsed) ? parsed.filter(Boolean) : [item.image_url];
-            } catch {
-              images = item.image_url
-                .split(',')
-                .map((value) => value.trim())
-                .filter(Boolean);
-            }
-          }
-
+          const images = normalizeImageList(item.image_url, apiBase);
           const fallbackImage = 'https://images.unsplash.com/photo-1585320806297-9794b3e4eeae?auto=format&fit=crop&w=800&q=80';
 
           return {
