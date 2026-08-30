@@ -1243,30 +1243,278 @@ img {
     display: block;
   }
   .navbar-pill {
-    padding: 10px 18px;
+    padding: 10px 14px;
+    max-width: calc(100% - 32px);
+  }
+  .navbar-logo {
+    font-size: 1rem;
+  }
+  
+  .hero-wrapper {
+    min-height: 420px;
+    padding: 80px 20px 50px 20px;
   }
   .hero-title {
     font-size: 1.85rem;
+    line-height: 1.3;
   }
+  .hero-subtitle {
+    font-size: 1rem;
+    margin-bottom: 20px;
+  }
+  .hero-actions {
+    flex-direction: column;
+    width: 100%;
+  }
+  .btn-primary-hero, .btn-secondary-hero {
+    width: 100%;
+    justify-content: center;
+  }
+  
+  .container {
+    padding: 0 16px;
+  }
+  
   .stats-grid {
     grid-template-columns: repeat(2, 1fr);
+    gap: 16px;
   }
   .stat-item:nth-child(2)::after {
     display: none;
   }
+  .stat-item:nth-child(3)::after {
+    display: none;
+  }
+  
   .dual-brand-cards {
     grid-template-columns: 1fr;
   }
+  .dual-brand-grid {
+    gap: 20px;
+  }
+  
+  .feature-cards-grid {
+    grid-template-columns: 1fr;
+    gap: 16px;
+  }
+  
+  .portfolio-grid, .testimonials-grid {
+    grid-template-columns: 1fr;
+    gap: 16px;
+  }
+  
+  .contact-grid {
+    gap: 24px;
+  }
+  .contact-info-card, .form-card {
+    padding: 24px;
+  }
+  .contact-item {
+    gap: 12px;
+    margin-bottom: 18px;
+  }
+  .contact-icon-box {
+    width: 38px;
+    height: 38px;
+  }
+  
+  .map-embed-wrapper {
+    height: 240px;
+  }
+  
+  .form-title {
+    font-size: 1.2rem;
+    margin-bottom: 18px;
+  }
+  .form-input, .form-select, .form-textarea {
+    padding: 11px 14px;
+    font-size: 16px;
+  }
+  
+  .btn-form-submit {
+    padding: 11px 20px;
+    font-size: 0.85rem;
+    width: 48%;
+  }
+  
+  .footer-grid {
+    grid-template-columns: 1fr;
+    gap: 30px;
+  }
+  .footer-dark {
+    padding: 50px 0 20px 0;
+  }
+  
+  .testimonials-dark-container {
+    padding: 36px 20px;
+  }
+  
+  .vision-mission-grid {
+    grid-template-columns: 1fr;
+    gap: 24px;
+    margin: 40px 0;
+  }
+  
+  .section-title {
+    font-size: 1.8rem;
+  }
+  
+  .review-text {
+    font-size: 0.9rem;
+  }
+  
+  .review-avatar {
+    width: 40px;
+    height: 40px;
+  }
+}
+
+@media (max-width: 480px) {
+  .navbar-pill {
+    padding: 8px 12px;
+  }
+  .navbar-logo {
+    font-size: 0.9rem;
+    gap: 6px;
+  }
+  
+  .hero-wrapper {
+    min-height: 350px;
+    padding: 60px 16px 40px 16px;
+  }
+  .hero-title {
+    font-size: 1.5rem;
+    line-height: 1.3;
+  }
+  .hero-tag {
+    font-size: 0.75rem;
+    padding: 5px 12px;
+  }
+  .hero-subtitle {
+    font-size: 0.9rem;
+  }
+  
+  .container {
+    padding: 0 12px;
+  }
+  
+  .container-sm {
+    padding: 0 12px;
+  }
+  
+  .section-title {
+    font-size: 1.5rem;
+    margin-bottom: 12px;
+  }
+  
+  .section-subtitle {
+    font-size: 0.95rem;
+  }
+  
+  .stats-bar {
+    padding: 20px 0;
+  }
+  .stats-grid {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 12px;
+  }
+  .stat-value {
+    font-size: 1.5rem;
+  }
+  .stat-item {
+    position: relative;
+  }
+  .stat-item::after {
+    display: none;
+  }
+  
   .feature-cards-grid {
     grid-template-columns: 1fr;
   }
-  .portfolio-grid, .testimonials-grid {
+  
+  .portfolio-grid, .testimonials-grid, .services-grid {
     grid-template-columns: 1fr;
+  }
+  
+  .contact-section {
+    padding: 40px 0;
+  }
+  .contact-grid {
+    gap: 20px;
+  }
+  .contact-info-card, .form-card {
+    padding: 18px;
+    border-radius: var(--radius-md);
+  }
+  .contact-item {
+    gap: 10px;
+    margin-bottom: 16px;
+  }
+  .contact-icon-box {
+    width: 36px;
+    height: 36px;
+    font-size: 0.85rem;
+  }
+  
+  .map-embed-wrapper {
+    height: 200px;
+  }
+  
+  .form-title {
+    font-size: 1rem;
+    margin-bottom: 16px;
+  }
+  .form-label {
+    font-size: 0.8rem;
+  }
+  .form-input, .form-select, .form-textarea {
+    padding: 10px 12px;
+    font-size: 16px;
+    border-radius: 8px;
+  }
+  .form-textarea {
+    min-height: 100px;
+  }
+  
+  .btn-form-submit {
+    padding: 10px 16px;
+    font-size: 0.8rem;
+    width: 100%;
+    margin-top: 8px;
+  }
+  
+  .footer-dark {
+    padding: 40px 0 16px 0;
   }
   .footer-grid {
-    grid-template-columns: 1fr;
+    gap: 24px;
   }
-  .testimonials-dark-container {
-    padding: 36px 20px;
+  .footer-col h4 {
+    font-size: 1rem;
+  }
+  
+  .vision-mission-grid {
+    gap: 16px;
+    margin: 30px 0;
+  }
+  
+  .box-visi, .box-misi {
+    padding: 18px;
+  }
+  
+  .hero-floating-badge {
+    right: 20px;
+    bottom: 20px;
+    gap: 12px;
+  }
+  
+  .slot-badge {
+    font-size: 0.75rem;
+    padding: 8px 16px;
+  }
+  
+  .whatsapp-fab {
+    width: 48px;
+    height: 48px;
   }
 }
