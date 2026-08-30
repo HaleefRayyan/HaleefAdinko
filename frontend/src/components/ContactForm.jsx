@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Send, CheckCircle2 } from 'lucide-react';
+import { Send, CheckCircle2, Phone, MessageCircle } from 'lucide-react';
 import { siteConfig } from '../data/siteData';
 
 export const ContactForm = ({ title = "Kirim Pesan Sekarang" }) => {
@@ -21,6 +21,43 @@ export const ContactForm = ({ title = "Kirim Pesan Sekarang" }) => {
     { id: 8, label: 'Lainnya' }
   ];
   const [submitted, setSubmitted] = useState(false);
+  const [error, setError] = useState('');
+
+  const formatPhoneNumber = (phone) => {
+    if (!phone) return '';
+    let cleaned = phone.replace(/\D/g, '');
+    if (cleaned.startsWith('0')) {
+      cleaned = '62' + cleaned.slice(1);
+    }
+    if (!cleaned.startsWith('62')) {
+      cleaned = '62' + cleaned;
+    }
+    return cleaned;
+  };
+
+  const generateWhatsAppMessage = () => {
+    const kategoriLabel = kategoriOptions.find(k => k.id === formData.kategori)?.label || formData.kategori;
+    const timestamp = new Date().toLocaleDateString('id-ID', { weekday: 'short', year: 'numeric', month: 'short', day: 'numeric' });
+    
+    const messageParts = [
+      '📋 *FORMULIR KONSULTASI ADINKO & GHAZISPORTSHUB*',
+      '',
+      `📅 Tanggal: ${timestamp}`,
+      '',
+      '👤 *Data Konsultan:*',
+      `• Nama: ${formData.nama_lengkap}`,
+      `• WhatsApp: ${formData.no_whatsapp}`,
+      `• Lokasi: ${formData.lokasi}`,
+      '',
+      '🎯 *Detail Kebutuhan:*',
+      `• Layanan: ${kategoriLabel}`,
+      `• Keterangan: ${formData.keterangan || '(Tidak ada keterangan tambahan)'}`,
+      '',
+      '✅ Mohon hubungi saya untuk survey dan penawaran terbaik.'
+    ];
+    
+    return messageParts.join('%0A');
+  };
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -31,38 +68,43 @@ export const ContactForm = ({ title = "Kirim Pesan Sekarang" }) => {
         : value;
 
     setFormData(prev => ({ ...prev, [name]: nextValue }));
+    if (error) setError('');
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    // Prepare message for WhatsApp
-    const kategoriLabel = kategoriOptions.find(k => k.id === formData.kategori)?.label || formData.kategori;
-    const message = `Halo Adinko & GhaziSportsHub,%0A%0A*Konsultasi Proyek Baru*%0A- *Nama:* ${encodeURIComponent(formData.nama_lengkap)}%0A- *No. WhatsApp:* ${encodeURIComponent(formData.no_whatsapp)}%0A- *Lokasi Proyek:* ${encodeURIComponent(formData.lokasi)}%0A- *Kebutuhan Layanan:* ${encodeURIComponent(kategoriLabel)}%0A- *Keterangan:* ${encodeURIComponent(formData.keterangan || '-')}%0A%0AMohon info estimasi dan penjadwalan survei. Terima kasih.`;
+    
+    // Validate required fields
+    if (!formData.nama_lengkap.trim() || !formData.no_whatsapp.trim() || !formData.lokasi.trim()) {
+      setError('Mohon isi semua field yang diperlukan');
+      return;
+    }
+    
+    const formattedPhone = formatPhoneNumber(formData.no_whatsapp);
+    const message = generateWhatsAppMessage();
 
-    // Post to backend; use Vite env or fallback to relative path (works with proxy)
+    // Post to backend
     const apiBase = import.meta.env.VITE_API_URL || '';
 
-    (async () => {
-      try {
-        const res = await fetch(`${apiBase}/contact`, {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify(formData)
-        });
+    try {
+      const res = await fetch(`${apiBase}/contact`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(formData)
+      });
 
-        if (!res.ok) {
-          console.error('Failed to submit contact', res.statusText);
-        }
-      } catch (err) {
-        console.error('Error posting contact', err);
-      } finally {
-        setSubmitted(true);
-        // Open WhatsApp after small feedback delay
-        setTimeout(() => {
-          window.open(`https://wa.me/${siteConfig.contacts.directWaNumber}?text=${message}`, '_blank');
-        }, 400);
+      if (!res.ok) {
+        console.error('Failed to submit contact', res.statusText);
       }
-    })();
+    } catch (err) {
+      console.error('Error posting contact', err);
+    } finally {
+      setSubmitted(true);
+      // Open WhatsApp after small feedback delay
+      setTimeout(() => {
+        window.open(`https://wa.me/${formattedPhone}?text=${message}`, '_blank');
+      }, 500);
+    }
   };
 
   return (
@@ -72,14 +114,17 @@ export const ContactForm = ({ title = "Kirim Pesan Sekarang" }) => {
       {submitted ? (
         <div style={{ textAlign: 'center', padding: '30px 20px', background: '#FFFFFF', borderRadius: '12px' }}>
           <CheckCircle2 size={48} color="#486F0C" style={{ margin: '0 auto 12px auto' }} />
-          <h4 style={{ fontSize: '1.2rem', fontWeight: 700, color: '#121212' }}>Pesan Anda Telah Disiapkan!</h4>
+          <h4 style={{ fontSize: '1.2rem', fontWeight: 700, color: '#121212' }}>Pesan Anda Telah Disiapkan! ✨</h4>
           <p style={{ fontSize: '0.9rem', color: '#667068', marginTop: '6px' }}>
-            Membuka WhatsApp untuk mengirim detail konsultasi langsung ke tim kami...
+            Membuka WhatsApp untuk mengirim detail konsultasi lengkap ke tim kami...
+          </p>
+          <p style={{ fontSize: '0.8rem', color: '#999', marginTop: '12px' }}>
+            💡 Tim kami biasanya merespons dalam 1 jam
           </p>
           <button 
             type="button" 
-            onClick={() => setSubmitted(false)}
-            style={{ marginTop: '18px', color: '#486F0C', fontWeight: 600, fontSize: '0.85rem' }}
+            onClick={() => { setSubmitted(false); setError(''); }}
+            style={{ marginTop: '18px', color: '#486F0C', fontWeight: 600, fontSize: '0.85rem', cursor: 'pointer' }}
           >
             ← Kirim pesan baru
           </button>
@@ -115,6 +160,9 @@ export const ContactForm = ({ title = "Kirim Pesan Sekarang" }) => {
               value={formData.no_whatsapp}
               onChange={handleChange}
             />
+            <small style={{ display: 'block', marginTop: '4px', color: '#667068', fontSize: '0.8rem' }}>
+              Nomor tanpa +62, boleh dengan 0 di depan atau angka saja
+            </small>
           </div>
 
           <div className="form-group">
@@ -158,10 +206,29 @@ export const ContactForm = ({ title = "Kirim Pesan Sekarang" }) => {
             />
           </div>
 
-          <div style={{ display: 'flex', justifyContent: 'flex-end', marginTop: '10px' }}>
+          {error && (
+            <div style={{ marginBottom: '16px', padding: '12px', background: '#FEE2E2', color: '#991B1B', borderRadius: '8px', fontSize: '0.85rem', fontWeight: 600 }}>
+              ⚠️ {error}
+            </div>
+          )}
+
+          <div style={{ display: 'flex', justifyContent: 'flex-end', gap: '10px', marginTop: '10px' }}>
+            <button 
+              type="button" 
+              onClick={() => {
+                const formattedPhone = formatPhoneNumber(formData.no_whatsapp || siteConfig.contacts.directWaNumber);
+                window.open(`tel:+${formattedPhone}`, '_self');
+              }}
+              className="btn-form-submit"
+              style={{ background: '#f0f0f0', color: '#111827' }}
+              title="Hubungi langsung via telepon"
+            >
+              <span>Telepon</span>
+              <Phone size={15} />
+            </button>
             <button type="submit" className="btn-form-submit">
-              <span>Kirim Pesan</span>
-              <Send size={15} />
+              <span>Kirim ke WhatsApp</span>
+              <MessageCircle size={15} />
             </button>
           </div>
         </form>

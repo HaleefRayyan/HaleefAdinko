@@ -198,8 +198,8 @@ export const portfolioData = [
   }
 ];
 
-// Testimoni Data
-export const testimonialsData = [
+// Google review data used as the primary public testimonial source.
+export const googleReviews = [
   {
     id: 1,
     name: "Ajo WW",
@@ -207,7 +207,8 @@ export const testimonialsData = [
     category: "Rumput Sintetis",
     rating: 5,
     avatar: "https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?auto=format&fit=crop&w=150&q=80",
-    text: "Rekomendet banget ini.. hasilnya rapih, rumputnya berkualitas ngk mengecewakan... ditunggu kerjasama selanjutnya, sukses selalu.. :)"
+    text: "Rekomendet banget ini.. hasilnya rapih, rumputnya berkualitas ngk mengecewakan... ditunggu kerjasama selanjutnya, sukses selalu.. :)",
+    source: "Google Review"
   },
   {
     id: 2,
@@ -216,7 +217,8 @@ export const testimonialsData = [
     category: "Rumput Sintetis",
     rating: 5,
     avatar: "https://images.unsplash.com/photo-1494790108377-be9c29b29330?auto=format&fit=crop&w=150&q=80",
-    text: "Pelayanan bagus banget trus juga harganya itu lohh wow dehh, berkualitas juga and rumput nya sintetis rapih pula pekerjaan nya sukaaa dehhh😍🥰 ..."
+    text: "Pelayanan bagus banget trus juga harganya itu lohh wow dehh, berkualitas juga and rumput nya sintetis rapih pula pekerjaan nya sukaaa dehhh😍🥰 ...",
+    source: "Google Review"
   },
   {
     id: 3,
@@ -225,7 +227,8 @@ export const testimonialsData = [
     category: "Rumput Sintetis",
     rating: 5,
     avatar: "https://images.unsplash.com/photo-1570295999919-56ceb5ecca61?auto=format&fit=crop&w=150&q=80",
-    text: "Rumputnya cakep, dan pemasangannya rapi.. terimakasih adinko rumput sintetis PEKANBARU"
+    text: "Rumputnya cakep, dan pemasangannya rapi.. terimakasih adinko rumput sintetis PEKANBARU",
+    source: "Google Review"
   },
   {
     id: 4,
@@ -234,7 +237,8 @@ export const testimonialsData = [
     category: "Lapangan Olahraga",
     rating: 5,
     avatar: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&w=150&q=80",
-    text: "Pelayanan nya super exelent, pengerjaan lapangan mini soccer selesai tepat waktu dan jaring terpasang sangat kokoh."
+    text: "Pelayanan nya super exelent, pengerjaan lapangan mini soccer selesai tepat waktu dan jaring terpasang sangat kokoh.",
+    source: "Google Review"
   },
   {
     id: 5,
@@ -243,7 +247,8 @@ export const testimonialsData = [
     category: "Vertical Garden",
     rating: 5,
     avatar: "https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=150&q=80",
-    text: "Pelayanan baik dan harga terjangkau 👍 ... taman sintetis di cafe kami sekarang jadi spot foto favorit pelanggan."
+    text: "Pelayanan baik dan harga terjangkau 👍 ... taman sintetis di cafe kami sekarang jadi spot foto favorit pelanggan.",
+    source: "Google Review"
   },
   {
     id: 6,
@@ -252,6 +257,10 @@ export const testimonialsData = [
     category: "Rumput Sintetis",
     rating: 5,
     avatar: "https://images.unsplash.com/photo-1517841905240-472988babdf9?auto=format&fit=crop&w=150&q=80",
-    text: "Mantull dan orgnya ramah Kerja rapi, recommended untuk siapa saja di Pekanbaru yang mau pasang rumput sintetis."
+    text: "Mantull dan orgnya ramah Kerja rapi, recommended untuk siapa saja di Pekanbaru yang mau pasang rumput sintetis.",
+    source: "Google Review"
   }
 ];
+
+// Backward compatibility for older imports.
+export const testimonialsData = googleReviews;

@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { ArrowRight } from 'lucide-react';
 import { ReviewCard } from '../components/ReviewCard';
 import { HeroFloatingBadge } from '../components/FloatingCta';
+import { googleReviews } from '../data/siteData';
 
 const FALLBACK_AVATARS = [
   'https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?auto=format&fit=crop&w=150&q=80',
@@ -58,6 +59,19 @@ export const Testimoni = () => {
   useEffect(() => {
     const apiBase = import.meta.env.VITE_API_URL || '';
 
+    const primaryReviews = (googleReviews || []).map((item, index) => ({
+      id: item.id || index + 1,
+      name: item.name || 'Klien',
+      time: item.time || 'Baru-baru ini',
+      rating: Number(item.rating) || 5,
+      text: item.text || '',
+      avatar: item.avatar || FALLBACK_AVATARS[index % FALLBACK_AVATARS.length],
+      category: normalizeCategory(item.category || item.text || ''),
+      source: item.source || 'Google Review'
+    }));
+
+    setReviews(primaryReviews);
+
     fetch(`${apiBase}/testimoni`)
       .then((response) => response.json())
       .then((json) => {
@@ -70,14 +84,16 @@ export const Testimoni = () => {
           rating: Number(item.rating) || 5,
           text: item.deskripsi || '',
           avatar: FALLBACK_AVATARS[index % FALLBACK_AVATARS.length],
-          category: normalizeCategory(item.kategori_layanan || item.deskripsi || '')
+          category: normalizeCategory(item.kategori_layanan || item.deskripsi || ''),
+          source: 'Customer Review'
         }));
 
-        setReviews(normalized);
+        if (normalized.length > 0) {
+          setReviews(normalized.slice(0, primaryReviews.length || 6));
+        }
       })
       .catch((error) => {
         console.error('Failed to fetch testimonies:', error);
-        setReviews([]);
       })
       .finally(() => setLoading(false));
   }, []);

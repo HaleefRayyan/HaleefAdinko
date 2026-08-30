@@ -17,12 +17,19 @@ const quickActions = [
 export const AdminDashboard = () => {
   return (
     <div>
-      <h2 style={pageTitle}>Dashboard</h2>
-      <p style={pageSubtitle}>Ringkasan konten website dan aktivitas terbaru.</p>
+      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: '12px', flexWrap: 'wrap', marginBottom: '20px' }}>
+        <div>
+          <h2 style={pageTitle}>Dashboard</h2>
+          <p style={pageSubtitle}>Ringkasan konten website dan aktivitas terbaru.</p>
+        </div>
+        <div style={{ background: 'linear-gradient(135deg, #eaf8e8 0%, #f7f0d9 100%)', borderRadius: '999px', padding: '10px 16px', color: '#214d2d', fontWeight: 700 }}>
+          Live mode
+        </div>
+      </div>
 
       <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(180px, 1fr))', gap: '18px', marginBottom: '28px' }}>
         {stats.map((item) => (
-          <div key={item.label} style={{ background: '#fff', borderRadius: '18px', padding: '22px 20px', boxShadow: '0 8px 24px rgba(0,0,0,0.05)' }}>
+          <div key={item.label} style={{ background: 'linear-gradient(180deg, #ffffff 0%, #f8fbf8 100%)', borderRadius: '18px', padding: '22px 20px', boxShadow: '0 10px 26px rgba(17, 24, 39, 0.06)', border: '1px solid rgba(17, 24, 39, 0.03)' }}>
             <div style={{ color: '#6b7280', fontSize: '0.82rem', marginBottom: '8px' }}>{item.label}</div>
             <div style={{ fontSize: '2rem', fontWeight: 800, color: item.tone }}>{item.value}</div>
           </div>
@@ -43,7 +50,7 @@ export const AdminDashboard = () => {
           <h3 style={{ margin: '0 0 16px', color: '#111827' }}>Quick Actions</h3>
           <div style={{ display: 'grid', gap: '10px' }}>
             {quickActions.map((item) => (
-              <button key={item} style={{ textAlign: 'left', background: '#edf7ee', color: '#1d4d2d', borderRadius: '12px', padding: '12px 14px', fontWeight: 600 }}>
+              <button key={item} style={{ textAlign: 'left', background: '#edf7ee', color: '#1d4d2d', borderRadius: '12px', padding: '12px 14px', fontWeight: 600, border: '1px solid rgba(29,77,45,0.08)' }}>
                 {item}
               </button>
             ))}
@@ -55,10 +62,11 @@ export const AdminDashboard = () => {
 };
 
 const pageTitle = { margin: 0, fontSize: '2rem', fontWeight: 800, color: '#111827' };
-const pageSubtitle = { margin: '8px 0 20px', color: '#6b7280' };
+const pageSubtitle = { margin: '8px 0 0', color: '#6b7280' };
 const panelStyle = {
   background: '#fff',
   borderRadius: '18px',
   padding: '22px',
-  boxShadow: '0 8px 24px rgba(0,0,0,0.05)'
+  boxShadow: '0 8px 24px rgba(0,0,0,0.05)',
+  border: '1px solid rgba(17, 24, 39, 0.04)'
 };

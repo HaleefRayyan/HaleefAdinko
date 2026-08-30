@@ -9,6 +9,7 @@ import { ReviewCard } from '../components/ReviewCard';
 import { ContactForm } from '../components/ContactForm';
 import { HeroFloatingBadge } from '../components/FloatingCta';
 import { AdinkoLogo, GhaziLogo } from '../assets/Logos';
+import { googleReviews } from '../data/siteData';
 
 const FALLBACK_AVATARS = [
   'https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?auto=format&fit=crop&w=150&q=80',
@@ -94,6 +95,20 @@ export const Home = () => {
       })
       .finally(() => setLoading(false));
 
+    const googleReviewSeed = (googleReviews || []).slice(0, 3).map((item, index) => ({
+      id: item.id || index + 1,
+      name: item.name || 'Klien',
+      time: item.time || 'Baru-baru ini',
+      rating: Number(item.rating) || 5,
+      text: item.text || '',
+      avatar: item.avatar || FALLBACK_AVATARS[index % FALLBACK_AVATARS.length],
+      category: normalizeCategory(item.category || item.text || ''),
+      source: item.source || 'Google Review'
+    }));
+
+    setTestimonials(googleReviewSeed);
+    setLoadingTestimonials(false);
+
     fetch(`${apiBase}/testimoni`)
       .then((response) => response.json())
       .then((json) => {
@@ -106,16 +121,20 @@ export const Home = () => {
           rating: Number(item.rating) || 5,
           text: item.deskripsi || '',
           avatar: FALLBACK_AVATARS[index % FALLBACK_AVATARS.length],
-          category: normalizeCategory(item.kategori_layanan || item.deskripsi || '')
+          category: normalizeCategory(item.kategori_layanan || item.deskripsi || ''),
+          source: 'Customer Review'
         }));
 
-        setTestimonials(normalized);
+        if (normalized.length > 0) {
+          setTestimonials(normalized.slice(0, 3));
+        }
       })
       .catch((error) => {
         console.error('Failed to fetch testimonials:', error);
-        setTestimonials([]);
       })
-      .finally(() => setLoadingTestimonials(false));
+      .finally(() => {
+        setLoadingTestimonials(false);
+      });
   }, []);
 
   const filterTabs = ['Semua', 'Taman', 'Vertical Garden', 'Lapangan Futsal', 'Minisoccer', 'Olahraga Lainnya'];
