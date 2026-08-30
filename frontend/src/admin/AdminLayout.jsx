@@ -14,8 +14,7 @@ const navItems = [
   { label: 'Home Settings', to: '/admin/home-settings' },
   { label: 'Portfolio', to: '/admin/portfolio' },
   { label: 'Testimoni', to: '/admin/testimoni' },
-  { label: 'Media', to: '/admin/media' },
-  { label: 'Kontak', to: '/admin/contact' }
+  { label: 'Media', to: '/admin/media' }
 ];
 
 export const AdminLayout = () => {
@@ -83,7 +82,6 @@ export const AdminLayout = () => {
             <Route path="/portfolio" element={<AdminPortfolio />} />
             <Route path="/testimoni" element={<AdminTestimoni />} />
             <Route path="/media" element={<AdminMedia />} />
-            <Route path="/contact" element={<Placeholder title="Contact Inquiries" />} />
             <Route path="*" element={<Navigate to="/admin/dashboard" replace />} />
           </Routes>
         </main>

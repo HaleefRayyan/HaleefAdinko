@@ -19,17 +19,23 @@ export const Portofolio = () => {
         const data = Array.isArray(json?.data) ? json.data : [];
 
         const normalized = data.map((item) => {
-          let imageUrl = item.image_url;
+          let images = [];
 
-          // Handle JSON string arrays in image_url
-          if (typeof imageUrl === 'string') {
+          if (Array.isArray(item.image_url)) {
+            images = item.image_url.filter(Boolean);
+          } else if (typeof item.image_url === 'string') {
             try {
-              const parsed = JSON.parse(imageUrl);
-              imageUrl = Array.isArray(parsed) ? parsed[0] : imageUrl;
+              const parsed = JSON.parse(item.image_url);
+              images = Array.isArray(parsed) ? parsed.filter(Boolean) : [item.image_url];
             } catch {
-              // If parsing fails, use as-is
+              images = item.image_url
+                .split(',')
+                .map((value) => value.trim())
+                .filter(Boolean);
             }
           }
+
+          const fallbackImage = 'https://images.unsplash.com/photo-1585320806297-9794b3e4eeae?auto=format&fit=crop&w=800&q=80';
 
           return {
             id: item.idportfolio || item.id,
@@ -37,7 +43,8 @@ export const Portofolio = () => {
             location: item.lokasi || 'Lokasi tidak tersedia',
             category: item.kategori_layanan || 'Kategori',
             description: item.deskripsi || '',
-            image: imageUrl || 'https://images.unsplash.com/photo-1585320806297-9794b3e4eeae?auto=format&fit=crop&w=800&q=80'
+            image: images[0] || fallbackImage,
+            images: images.length > 0 ? images : [fallbackImage]
           };
         });
 
