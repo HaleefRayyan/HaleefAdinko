@@ -1,19 +1,45 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 
+const apiBase = import.meta.env.VITE_API_URL || 'http://localhost:4000';
+
 export const AdminLogin = () => {
   const navigate = useNavigate();
   const [form, setForm] = useState({ email: 'admin@haleefadinko.com', password: 'admin123' });
+  const [error, setError] = useState('');
+  const [loading, setLoading] = useState(false);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
     setForm((prev) => ({ ...prev, [name]: value }));
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    localStorage.setItem('adminAuth', 'true');
-    navigate('/admin/dashboard');
+    setLoading(true);
+    setError('');
+
+    try {
+      const res = await fetch(`${apiBase}/admin-auth/login`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(form)
+      });
+
+      const json = await res.json();
+
+      if (!res.ok) {
+        throw new Error(json.message || 'Login gagal');
+      }
+
+      localStorage.setItem('adminAuth', 'true');
+      localStorage.setItem('adminUser', JSON.stringify(json.data));
+      navigate('/admin/dashboard');
+    } catch (err) {
+      setError(err.message || 'Login gagal');
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
@@ -66,8 +92,14 @@ export const AdminLogin = () => {
             />
           </div>
 
-          <button type="submit" style={primaryButton}>
-            Masuk ke Dashboard
+          {error && (
+            <div style={{ marginBottom: '16px', color: '#b91c1c', background: '#fef2f2', borderRadius: '10px', padding: '10px 12px', fontSize: '0.9rem' }}>
+              {error}
+            </div>
+          )}
+
+          <button type="submit" style={primaryButton} disabled={loading}>
+            {loading ? 'Memeriksa...' : 'Masuk ke Dashboard'}
           </button>
         </form>
       </div>

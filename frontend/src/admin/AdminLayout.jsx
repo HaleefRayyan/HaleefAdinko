@@ -3,6 +3,9 @@ import { Navigate, NavLink, Route, Routes, useLocation, useNavigate } from 'reac
 import { AdminDashboard } from './AdminDashboard';
 import { AdminSiteSettings } from './AdminSiteSettings';
 import { AdminHomeSettings } from './AdminHomeSettings';
+import { AdminPortfolio } from './AdminPortfolio';
+import { AdminTestimoni } from './AdminTestimoni';
+import { AdminMedia } from './AdminMedia';
 import { AdminLogin } from './AdminLogin';
 
 const navItems = [
@@ -11,6 +14,7 @@ const navItems = [
   { label: 'Home Settings', to: '/admin/home-settings' },
   { label: 'Portfolio', to: '/admin/portfolio' },
   { label: 'Testimoni', to: '/admin/testimoni' },
+  { label: 'Media', to: '/admin/media' },
   { label: 'Kontak', to: '/admin/contact' }
 ];
 
@@ -76,8 +80,9 @@ export const AdminLayout = () => {
             <Route path="/dashboard" element={<AdminDashboard />} />
             <Route path="/site-settings" element={<AdminSiteSettings />} />
             <Route path="/home-settings" element={<AdminHomeSettings />} />
-            <Route path="/portfolio" element={<Placeholder title="Portfolio Management" />} />
-            <Route path="/testimoni" element={<Placeholder title="Testimoni Management" />} />
+            <Route path="/portfolio" element={<AdminPortfolio />} />
+            <Route path="/testimoni" element={<AdminTestimoni />} />
+            <Route path="/media" element={<AdminMedia />} />
             <Route path="/contact" element={<Placeholder title="Contact Inquiries" />} />
             <Route path="*" element={<Navigate to="/admin/dashboard" replace />} />
           </Routes>

@@ -8,6 +8,9 @@ const PortfolioRoutes = require('./routes/portfolioRoute');
 const testimoniRoutes = require('./routes/testimoniRoute');
 const contactRoutes = require('./routes/contactRoute');
 const kategoriRoutes = require('./routes/kategoriRoute');
+const adminRoutes = require('./routes/adminRoute');
+const adminAuthRoute = require('./routes/adminAuthRoute');
+const mediaRoutes = require('./routes/mediaRoute');
 
 const middlewareLogRequest = require('./middleware/logs');
 const upload = require('./middleware/multer');
@@ -36,6 +39,9 @@ app.use('/portfolio', PortfolioRoutes);
 app.use('/testimoni', testimoniRoutes);
 app.use('/contact', contactRoutes);
 app.use('/kategori', kategoriRoutes);
+app.use('/admin', adminRoutes);
+app.use('/admin-auth', adminAuthRoute);
+app.use('/media', mediaRoutes);
 
 app.use((err, req, res, next) => {
     console.error(err);

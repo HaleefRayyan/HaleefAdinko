@@ -1,8 +1,8 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { ArrowRight, Star, MapPin, Phone, CheckCircle2, ChevronRight, Navigation } from 'lucide-react';
 import { InstagramIcon } from '../assets/Icons';
-import { siteConfig, portfolioData, testimonialsData } from '../data/siteData';
+import { siteConfig } from '../data/siteData';
 import { FeatureCards } from '../components/FeatureCards';
 import { ProjectCard } from '../components/ProjectCard';
 import { ReviewCard } from '../components/ReviewCard';
@@ -10,19 +10,103 @@ import { ContactForm } from '../components/ContactForm';
 import { HeroFloatingBadge } from '../components/FloatingCta';
 import { AdinkoLogo, GhaziLogo } from '../assets/Logos';
 
+const FALLBACK_AVATARS = [
+  'https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?auto=format&fit=crop&w=150&q=80',
+  'https://images.unsplash.com/photo-1494790108377-be9c29b29330?auto=format&fit=crop&w=150&q=80',
+  'https://images.unsplash.com/photo-1570295999919-56ceb5ecca61?auto=format&fit=crop&w=150&q=80',
+  'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&w=150&q=80',
+  'https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=150&q=80',
+  'https://images.unsplash.com/photo-1517841905240-472988babdf9?auto=format&fit=crop&w=150&q=80'
+];
+
+const normalizeCategory = (text = '') => {
+  const lower = text.toLowerCase();
+
+  if (lower.includes('lapangan') || lower.includes('futsal') || lower.includes('mini soccer') || lower.includes('soccer')) {
+    return 'Lapangan Olahraga';
+  }
+  if (lower.includes('vertical') || lower.includes('garden')) {
+    return 'Vertical Garden';
+  }
+
+  return 'Rumput Sintetis';
+};
+
+const apiBase = import.meta.env.VITE_API_URL || '';
+
 export const Home = () => {
   const navigate = useNavigate();
+  const [projects, setProjects] = useState([]);
+  const [testimonials, setTestimonials] = useState([]);
   const [activeFilter, setActiveFilter] = useState('Semua');
+  const [loading, setLoading] = useState(true);
+  const [loadingTestimonials, setLoadingTestimonials] = useState(true);
 
-  const filterTabs = ['Semua', 'Taman Rumah', 'Mini Soccer', 'Futsal', 'Lapangan Lainnya'];
+  useEffect(() => {
+    fetch(`${apiBase}/portfolio`)
+      .then((response) => response.json())
+      .then((json) => {
+        const data = Array.isArray(json?.data) ? json.data : [];
 
-  const filteredProjects = portfolioData.filter(item => {
+        const normalized = data.map((item) => {
+          let imageUrl = item.image_url;
+
+          if (typeof imageUrl === 'string') {
+            try {
+              const parsed = JSON.parse(imageUrl);
+              imageUrl = Array.isArray(parsed) ? parsed[0] : imageUrl;
+            } catch {
+              // ignore invalid JSON and use fallback below
+            }
+          }
+
+          return {
+            id: item.idportfolio || item.id,
+            title: item.nama_proyek || 'Project',
+            location: item.lokasi || 'Lokasi tidak tersedia',
+            category: item.kategori_layanan || 'Kategori',
+            description: item.deskripsi || '',
+            image: imageUrl || 'https://images.unsplash.com/photo-1585320806297-9794b3e4eeae?auto=format&fit=crop&w=800&q=80'
+          };
+        });
+
+        setProjects(normalized);
+      })
+      .catch((error) => {
+        console.error('Failed to fetch portfolio:', error);
+        setProjects([]);
+      })
+      .finally(() => setLoading(false));
+
+    fetch(`${apiBase}/testimoni`)
+      .then((response) => response.json())
+      .then((json) => {
+        const data = Array.isArray(json?.data) ? json.data : [];
+
+        const normalized = data.slice(0, 3).map((item, index) => ({
+          id: item.id || index + 1,
+          name: item.nama_klien || 'Klien',
+          time: item.waktu || 'Baru-baru ini',
+          rating: Number(item.rating) || 5,
+          text: item.deskripsi || '',
+          avatar: FALLBACK_AVATARS[index % FALLBACK_AVATARS.length],
+          category: normalizeCategory(item.kategori_layanan || item.deskripsi || '')
+        }));
+
+        setTestimonials(normalized);
+      })
+      .catch((error) => {
+        console.error('Failed to fetch testimonials:', error);
+        setTestimonials([]);
+      })
+      .finally(() => setLoadingTestimonials(false));
+  }, []);
+
+  const filterTabs = ['Semua', 'Taman', 'Vertical Garden', 'Lapangan Futsal', 'Minisoccer', 'Olahraga Lainnya'];
+
+  const filteredProjects = projects.filter((item) => {
     if (activeFilter === 'Semua') return true;
-    if (activeFilter === 'Taman Rumah') return item.category === 'Taman';
-    if (activeFilter === 'Mini Soccer') return item.category === 'Minisoccer';
-    if (activeFilter === 'Futsal') return item.category === 'Lapangan Futsal';
-    if (activeFilter === 'Lapangan Lainnya') return item.category === 'Olahraga Lainnya' || item.category === 'Vertical Garden';
-    return true;
+    return item.category === activeFilter;
   }).slice(0, 6);
 
   return (
@@ -211,9 +295,19 @@ export const Home = () => {
 
           {/* 6 Projects Grid */}
           <div className="portfolio-grid">
-            {filteredProjects.map((project) => (
-              <ProjectCard key={project.id} project={project} />
-            ))}
+            {loading ? (
+              <div style={{ gridColumn: '1 / -1', textAlign: 'center', color: '#667068', padding: '20px' }}>
+                Memuat portfolio...
+              </div>
+            ) : filteredProjects.length === 0 ? (
+              <div style={{ gridColumn: '1 / -1', textAlign: 'center', color: '#667068', padding: '20px' }}>
+                Belum ada proyek yang tersedia untuk kategori ini.
+              </div>
+            ) : (
+              filteredProjects.map((project) => (
+                <ProjectCard key={project.id} project={project} />
+              ))
+            )}
           </div>
 
           <div className="text-center" style={{ marginTop: '40px' }}>
@@ -266,9 +360,19 @@ export const Home = () => {
 
           {/* 3 Review Cards Grid */}
           <div className="testimonials-grid">
-            {testimonialsData.slice(0, 3).map((review) => (
-              <ReviewCard key={review.id} review={review} variant="dark" />
-            ))}
+            {loadingTestimonials ? (
+              <div style={{ gridColumn: '1 / -1', textAlign: 'center', color: '#d1d5db', padding: '12px' }}>
+                Memuat testimoni...
+              </div>
+            ) : testimonials.length === 0 ? (
+              <div style={{ gridColumn: '1 / -1', textAlign: 'center', color: '#d1d5db', padding: '12px' }}>
+                Belum ada testimoni yang tersedia.
+              </div>
+            ) : (
+              testimonials.map((review) => (
+                <ReviewCard key={review.id} review={review} variant="dark" />
+              ))
+            )}
           </div>
 
           <div className="text-center">
