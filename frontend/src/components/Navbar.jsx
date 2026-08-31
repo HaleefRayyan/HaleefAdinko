@@ -40,7 +40,10 @@ export const Navbar = () => {
         <nav className="navbar-pill">
           {/* Logo */}
           <Link to="/" className="navbar-logo" title="Beranda Adinko x GhaziSportsHub">
-            <AdinkoLogo size={40} />
+            <AdinkoLogo size={36} />
+            <span style={{ fontSize: '1rem', fontWeight: 800, color: '#111827', letterSpacing: '0.04em', whiteSpace: 'nowrap' }}>
+              ADINKO
+            </span>
           </Link>
 
           {/* Desktop Nav Links */}

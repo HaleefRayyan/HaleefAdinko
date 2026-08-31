@@ -1275,73 +1275,74 @@ img {
 /* Mobile Devices & Tablets (<= 768px) */
 @media (max-width: 768px) {
   .nav-links, .btn-nav-cta {
-    display: none;
+    display: none !important;
   }
   .mobile-toggle {
-    display: flex;
+    display: flex !important;
     align-items: center;
     justify-content: center;
   }
   .navbar-wrapper {
-    top: 14px;
-    padding: 0 12px;
+    top: 12px;
+    padding: 0 10px;
   }
   .navbar-pill {
-    padding: 8px 16px;
+    padding: 6px 14px;
     max-width: 100%;
     box-shadow: 0 6px 20px rgba(0, 0, 0, 0.08);
   }
   .navbar-logo {
-    font-size: 1rem;
+    font-size: 0.95rem;
+    gap: 8px;
+    flex-shrink: 0;
   }
   
   .hero-wrapper {
-    min-height: 480px;
-    padding: 110px 16px 48px 16px;
+    min-height: 400px;
+    padding: 95px 16px 36px 16px;
     border-radius: 0 0 24px 24px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: flex-start;
   }
   .hero-content {
-    margin-top: 10px;
+    margin-top: 0;
+    width: 100%;
+  }
+  .hero-tag {
+    font-size: 0.76rem;
+    padding: 5px 12px;
+    margin-bottom: 12px;
+    display: inline-block;
+    max-width: 100%;
+    line-height: 1.4;
   }
   .hero-title {
-    font-size: clamp(1.75rem, 6vw, 2.25rem);
+    font-size: clamp(1.65rem, 6vw, 2.1rem);
     line-height: 1.25;
-    margin-bottom: 14px;
+    margin-bottom: 12px;
   }
   .hero-subtitle {
-    font-size: 0.98rem;
-    line-height: 1.6;
-    margin-bottom: 24px;
+    font-size: 0.92rem;
+    line-height: 1.55;
+    margin-bottom: 20px;
   }
   .hero-actions {
     flex-direction: column;
     width: 100%;
-    gap: 12px;
+    gap: 10px;
   }
   .btn-primary-hero, .btn-secondary-hero {
     width: 100%;
     justify-content: center;
-    padding: 13px 20px;
-    font-size: 0.92rem;
+    padding: 12px 18px;
+    font-size: 0.9rem;
   }
   
-  /* Hero Floating Badge position on mobile */
+  /* CRITICAL: Completely hide hero floating badge on mobile so it doesn't block text */
   .hero-floating-badge {
-    position: static;
-    margin-top: 24px;
-    align-items: flex-start;
-    flex-direction: row;
-    justify-content: space-between;
-    width: 100%;
-  }
-  .hero-floating-badge .whatsapp-fab {
-    display: none; /* Already covered by sticky WhatsApp FAB */
-  }
-  .hero-floating-badge .slot-badge {
-    width: 100%;
-    justify-content: center;
-    font-size: 0.8rem;
-    padding: 8px 14px;
+    display: none !important;
   }
   
   .container {

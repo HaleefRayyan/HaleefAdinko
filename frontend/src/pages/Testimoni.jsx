@@ -4,6 +4,7 @@ import { ArrowRight, Star, ChevronLeft, ChevronRight, ExternalLink, RefreshCw, C
 import { ReviewCard } from '../components/ReviewCard';
 import { HeroFloatingBadge } from '../components/FloatingCta';
 import { useSiteContext } from '../context/SiteContext';
+import { googleReviews } from '../data/siteData';
 
 const REVIEWS_PER_PAGE = 6;
 
@@ -16,6 +17,17 @@ const FALLBACK_AVATARS = [
   'https://images.unsplash.com/photo-1517841905240-472988babdf9?auto=format&fit=crop&w=150&q=80',
 ];
 
+const normalizeCategory = (text = '') => {
+  const lower = String(text).toLowerCase();
+  if (lower.includes('lapangan') || lower.includes('futsal') || lower.includes('mini soccer') || lower.includes('soccer') || lower.includes('padel') || lower.includes('tenis')) {
+    return 'Lapangan Olahraga';
+  }
+  if (lower.includes('vertical') || lower.includes('garden')) {
+    return 'Vertical Garden';
+  }
+  return 'Rumput Sintetis';
+};
+
 const normalizeReview = (item, index) => ({
   id: item.id || item.idtestimoni || `r-${index}`,
   name: item.nama_klien || item.name || 'Klien',
@@ -23,8 +35,8 @@ const normalizeReview = (item, index) => ({
   rating: Number(item.rating) || 5,
   text: item.deskripsi || item.text || '',
   avatar: item.avatar || FALLBACK_AVATARS[index % FALLBACK_AVATARS.length],
-  category: item.kategori_layanan || item.category || 'Rumput Sintetis',
-  source: item.source || 'Ulasan Pelanggan Terverifikasi',
+  category: normalizeCategory(item.kategori_layanan || item.category || item.deskripsi || item.text || ''),
+  source: item.source || 'Google Reviews',
   author_url: item.author_url || '',
   publish_time: item.publish_time || '',
 });
@@ -49,50 +61,55 @@ const GoogleSummaryCard = ({ place, googleMapsUrl, loading }) => {
       <div style={{
         background: 'linear-gradient(135deg, #1a3d25 0%, #0f2419 100%)',
         borderRadius: '20px',
-        padding: '32px',
-        marginBottom: '48px',
+        padding: '24px',
+        marginBottom: '32px',
         display: 'flex',
         alignItems: 'center',
         justifyContent: 'center',
-        minHeight: '120px',
-        color: 'rgba(255,255,255,0.5)',
+        minHeight: '100px',
+        color: 'rgba(255,255,255,0.7)',
+        fontSize: '0.9rem'
       }}>
-        <RefreshCw size={20} style={{ marginRight: '8px', animation: 'spin 1s linear infinite' }} />
+        <RefreshCw size={18} style={{ marginRight: '8px', animation: 'spin 1s linear infinite' }} />
         Memuat data Google Reviews...
       </div>
     );
   }
 
-  if (!place) return null;
+  const currentPlace = place || {
+    rating: 5.0,
+    total_reviews: 28,
+    name: 'Adinko & GhaziSportsHub Pekanbaru'
+  };
 
-  const fullStars = Math.floor(place.rating || 5);
-  const ratingDisplay = (place.rating || 5).toFixed(1);
+  const fullStars = Math.floor(currentPlace.rating || 5);
+  const ratingDisplay = (currentPlace.rating || 5).toFixed(1);
 
   return (
     <div style={{
       background: 'linear-gradient(135deg, #1a3d25 0%, #0f2419 100%)',
       borderRadius: '20px',
       padding: '24px 20px',
-      marginBottom: '36px',
+      marginBottom: '32px',
       display: 'flex',
       flexWrap: 'wrap',
       alignItems: 'center',
       justifyContent: 'space-between',
-      gap: '20px',
-      boxShadow: '0 20px 60px rgba(0,0,0,0.25)',
+      gap: '18px',
+      boxShadow: '0 16px 40px rgba(0,0,0,0.22)',
       position: 'relative',
       overflow: 'hidden',
     }}>
       <div style={{
         position: 'absolute', top: '-40px', right: '-40px',
-        width: '200px', height: '200px',
+        width: '180px', height: '180px',
         background: 'radial-gradient(circle, rgba(212,167,44,0.15) 0%, transparent 70%)',
         pointerEvents: 'none',
       }} />
 
-      <div style={{ display: 'flex', alignItems: 'center', gap: '16px', flexWrap: 'wrap' }}>
+      <div style={{ display: 'flex', alignItems: 'center', gap: '14px', flexWrap: 'wrap' }}>
         <div style={{
-          width: '54px', height: '54px', borderRadius: '14px',
+          width: '52px', height: '52px', borderRadius: '14px',
           background: '#fff',
           display: 'flex', alignItems: 'center', justifyContent: 'center',
           flexShrink: 0,
@@ -108,41 +125,41 @@ const GoogleSummaryCard = ({ place, googleMapsUrl, loading }) => {
 
         <div>
           <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '4px' }}>
-            <CheckCircle size={15} color="#4ade80" />
+            <CheckCircle size={14} color="#4ade80" />
             <span style={{ color: '#4ade80', fontSize: '0.78rem', fontWeight: 700, letterSpacing: '0.06em', textTransform: 'uppercase' }}>
               Google Reviews Terverifikasi
             </span>
           </div>
           <div style={{ display: 'flex', alignItems: 'center', gap: '10px', flexWrap: 'wrap' }}>
-            <span style={{ fontSize: '2.5rem', fontWeight: 900, color: '#fff', lineHeight: 1 }}>
+            <span style={{ fontSize: '2.4rem', fontWeight: 900, color: '#fff', lineHeight: 1 }}>
               {ratingDisplay}
             </span>
             <div>
               <StarDisplay count={fullStars} size={18} color="#f59e0b" />
               <p style={{ color: 'rgba(255,255,255,0.7)', fontSize: '0.8rem', margin: '2px 0 0' }}>
-                dari {place.total_reviews || place.userRatingCount || 0}+ ulasan klien
+                dari {currentPlace.total_reviews || currentPlace.userRatingCount || 28}+ ulasan klien
               </p>
             </div>
           </div>
           <p style={{ color: 'rgba(255,255,255,0.55)', fontSize: '0.8rem', margin: '4px 0 0' }}>
-            {place.name || 'Haleef Adinko & GhaziSportsHub'}
+            {currentPlace.name}
           </p>
         </div>
       </div>
 
       <a
-        href={place.googleMapsUri || googleMapsUrl || 'https://maps.google.com'}
+        href={currentPlace.googleMapsUri || googleMapsUrl || 'https://maps.google.com'}
         target="_blank"
         rel="noopener noreferrer"
         style={{
           display: 'inline-flex', alignItems: 'center', justifyContent: 'center', gap: '8px',
           background: '#d4a72c', color: '#0f2419',
-          padding: '12px 20px', borderRadius: '50px',
+          padding: '11px 20px', borderRadius: '50px',
           fontWeight: 700, fontSize: '0.88rem',
           textDecoration: 'none',
           boxShadow: '0 4px 16px rgba(212,167,44,0.4)',
           width: 'auto',
-          minWidth: '200px',
+          minWidth: '180px',
           textAlign: 'center',
           transition: 'transform 0.2s, box-shadow 0.2s',
         }}
@@ -180,25 +197,25 @@ const Pagination = ({ currentPage, totalPages, onPageChange, sectionRef }) => {
 
   const btnBase = {
     display: 'inline-flex', alignItems: 'center', justifyContent: 'center',
-    width: '40px', height: '40px', borderRadius: '10px',
+    width: '38px', height: '38px', borderRadius: '10px',
     border: '1.5px solid #e5e7eb', background: '#fff',
-    cursor: 'pointer', fontWeight: 600, fontSize: '0.9rem',
+    cursor: 'pointer', fontWeight: 600, fontSize: '0.88rem',
     transition: 'all 0.2s', color: '#374151',
   };
 
   return (
-    <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '8px', marginTop: '48px', flexWrap: 'wrap' }}>
+    <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '6px', marginTop: '36px', flexWrap: 'wrap' }}>
       <button
         onClick={() => handlePage(currentPage - 1)}
         disabled={currentPage === 1}
-        style={{ ...btnBase, width: 'auto', padding: '0 14px', gap: '6px', opacity: currentPage === 1 ? 0.4 : 1, cursor: currentPage === 1 ? 'not-allowed' : 'pointer' }}
+        style={{ ...btnBase, width: 'auto', padding: '0 12px', gap: '4px', opacity: currentPage === 1 ? 0.4 : 1, cursor: currentPage === 1 ? 'not-allowed' : 'pointer' }}
       >
-        <ChevronLeft size={16} /> Sebelumnya
+        <ChevronLeft size={16} /> Prev
       </button>
 
       {buildPages().map((p, idx) =>
         p === '…' ? (
-          <span key={`ellipsis-${idx}`} style={{ padding: '0 4px', color: '#9ca3af' }}>…</span>
+          <span key={`ellipsis-${idx}`} style={{ padding: '0 2px', color: '#9ca3af' }}>…</span>
         ) : (
           <button
             key={p}
@@ -220,9 +237,9 @@ const Pagination = ({ currentPage, totalPages, onPageChange, sectionRef }) => {
       <button
         onClick={() => handlePage(currentPage + 1)}
         disabled={currentPage === totalPages}
-        style={{ ...btnBase, width: 'auto', padding: '0 14px', gap: '6px', opacity: currentPage === totalPages ? 0.4 : 1, cursor: currentPage === totalPages ? 'not-allowed' : 'pointer' }}
+        style={{ ...btnBase, width: 'auto', padding: '0 12px', gap: '4px', opacity: currentPage === totalPages ? 0.4 : 1, cursor: currentPage === totalPages ? 'not-allowed' : 'pointer' }}
       >
-        Selanjutnya <ChevronRight size={16} />
+        Next <ChevronRight size={16} />
       </button>
     </div>
   );
@@ -233,7 +250,8 @@ export const Testimoni = () => {
   const { apiBase, siteSettings } = useSiteContext();
   const sectionRef = useRef(null);
 
-  const [reviews, setReviews] = useState([]);
+  const initialFallback = (googleReviews || []).map(normalizeReview);
+  const [reviews, setReviews] = useState(initialFallback);
   const [placeInfo, setPlaceInfo] = useState(null);
   const [activeFilter, setActiveFilter] = useState('Semua');
   const [sortOrder, setSortOrder] = useState('default');
@@ -254,12 +272,17 @@ export const Testimoni = () => {
             .then((r) => r.json())
             .then((fallback) => {
               const data = Array.isArray(fallback?.data) ? fallback.data : [];
-              setReviews(data.map(normalizeReview));
+              if (data.length > 0) {
+                setReviews(data.map(normalizeReview));
+              } else {
+                setReviews(initialFallback);
+              }
             });
         }
       })
       .catch((err) => {
-        console.warn('Error fetching reviews:', err);
+        console.warn('Error fetching reviews, using fallback:', err);
+        setReviews(initialFallback);
       })
       .finally(() => setLoading(false));
   }, [apiBase]);
@@ -279,7 +302,7 @@ export const Testimoni = () => {
       return 0;
     });
 
-  const totalPages = Math.ceil(filteredReviews.length / REVIEWS_PER_PAGE);
+  const totalPages = Math.max(1, Math.ceil(filteredReviews.length / REVIEWS_PER_PAGE));
   const paginatedReviews = filteredReviews.slice(
     (currentPage - 1) * REVIEWS_PER_PAGE,
     currentPage * REVIEWS_PER_PAGE,
@@ -307,7 +330,7 @@ export const Testimoni = () => {
       </section>
 
       {/* MAIN CONTENT */}
-      <section style={{ padding: '80px 0', background: 'var(--white)' }} ref={sectionRef}>
+      <section style={{ padding: '50px 0 80px 0', background: 'var(--white)' }} ref={sectionRef}>
         <div className="container">
           {/* Google Summary Card */}
           <GoogleSummaryCard
@@ -317,8 +340,9 @@ export const Testimoni = () => {
           />
 
           {/* Controls bar */}
-          <div style={{ display: 'flex', flexWrap: 'wrap', gap: '16px', alignItems: 'center', justifyContent: 'space-between', marginBottom: '24px' }}>
-            <div className="filter-container" style={{ margin: 0 }}>
+          <div style={{ display: 'flex', flexDirection: 'column', gap: '16px', marginBottom: '28px' }}>
+            {/* Filter pills with horizontal scroll */}
+            <div className="filter-container" style={{ margin: 0, justifyContent: 'flex-start' }}>
               {filterTabs.map((tab) => (
                 <button
                   key={tab}
@@ -330,11 +354,12 @@ export const Testimoni = () => {
               ))}
             </div>
 
-            <div style={{ display: 'flex', gap: '10px', flexWrap: 'wrap' }}>
+            {/* Dropdown filters grid */}
+            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(140px, 1fr))', gap: '10px' }}>
               <select
                 value={minRating}
                 onChange={(e) => setMinRating(Number(e.target.value))}
-                style={{ padding: '8px 14px', borderRadius: '50px', border: '1.5px solid #e5e7eb', background: '#fff', fontSize: '0.88rem', fontWeight: 600, cursor: 'pointer', color: '#374151' }}
+                style={{ width: '100%', padding: '10px 14px', borderRadius: '50px', border: '1.5px solid #e5e7eb', background: '#fff', fontSize: '0.88rem', fontWeight: 600, cursor: 'pointer', color: '#374151' }}
               >
                 <option value={0}>⭐ Semua Rating</option>
                 <option value={5}>⭐⭐⭐⭐⭐ 5 Bintang</option>
@@ -345,7 +370,7 @@ export const Testimoni = () => {
               <select
                 value={sortOrder}
                 onChange={(e) => setSortOrder(e.target.value)}
-                style={{ padding: '8px 14px', borderRadius: '50px', border: '1.5px solid #e5e7eb', background: '#fff', fontSize: '0.88rem', fontWeight: 600, cursor: 'pointer', color: '#374151' }}
+                style={{ width: '100%', padding: '10px 14px', borderRadius: '50px', border: '1.5px solid #e5e7eb', background: '#fff', fontSize: '0.88rem', fontWeight: 600, cursor: 'pointer', color: '#374151' }}
               >
                 <option value="default">Urutan Default</option>
                 <option value="rating_desc">Rating Tertinggi</option>
@@ -356,7 +381,7 @@ export const Testimoni = () => {
 
           {/* Stats info */}
           {!loading && filteredReviews.length > 0 && (
-            <p style={{ color: '#6b7280', fontSize: '0.88rem', marginBottom: '24px' }}>
+            <p style={{ color: '#6b7280', fontSize: '0.88rem', marginBottom: '20px' }}>
               Menampilkan <strong>{paginatedReviews.length}</strong> dari <strong>{filteredReviews.length}</strong> ulasan
               {activeFilter !== 'Semua' ? ` dalam kategori "${activeFilter}"` : ''}
               {' — Halaman '}<strong>{currentPage}</strong> dari <strong>{totalPages}</strong>
@@ -364,10 +389,10 @@ export const Testimoni = () => {
           )}
 
           {/* Review Cards Grid */}
-          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(300px, 1fr))', gap: '24px' }}>
+          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))', gap: '20px' }}>
             {loading ? (
               Array.from({ length: 6 }).map((_, i) => (
-                <div key={i} style={{ background: '#f9fafb', borderRadius: '16px', padding: '24px', height: '200px', animation: 'pulse 1.5s ease-in-out infinite', border: '1px solid #f3f4f6' }} />
+                <div key={i} style={{ background: '#f9fafb', borderRadius: '16px', padding: '24px', height: '180px', animation: 'pulse 1.5s ease-in-out infinite', border: '1px solid #f3f4f6' }} />
               ))
             ) : paginatedReviews.length === 0 ? (
               <div style={{ gridColumn: '1 / -1', textAlign: 'center', color: '#667068', padding: '40px' }}>
@@ -390,7 +415,7 @@ export const Testimoni = () => {
           />
 
           {/* CTA */}
-          <div className="text-center" style={{ marginTop: '64px' }}>
+          <div className="text-center" style={{ marginTop: '54px' }}>
             <button onClick={() => navigate('/kontak')} className="btn-primary-hero">
               <span>Konsultasikan Kebutuhan Anda Sekarang</span>
               <span className="arrow-circle">
@@ -414,3 +439,4 @@ export const Testimoni = () => {
     </div>
   );
 };
+
