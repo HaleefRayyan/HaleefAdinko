@@ -4,16 +4,19 @@ import { AdminDashboard } from './AdminDashboard';
 import { AdminSiteSettings } from './AdminSiteSettings';
 import { AdminHomeSettings } from './AdminHomeSettings';
 import { AdminPortfolio } from './AdminPortfolio';
-import { AdminTestimoni } from './AdminTestimoni';
+import { AdminCategories } from './AdminCategories';
+import { AdminContacts } from './AdminContacts';
 import { AdminMedia } from './AdminMedia';
 import { AdminLogin } from './AdminLogin';
 
 const navItems = [
   { label: 'Dashboard', to: '/admin/dashboard' },
-  { label: 'Site Settings', to: '/admin/site-settings' },
-  { label: 'Home Settings', to: '/admin/home-settings' },
+  { label: 'Pesan / Klien', to: '/admin/contacts' },
   { label: 'Portfolio', to: '/admin/portfolio' },
-  { label: 'Media', to: '/admin/media' }
+  { label: 'Kategori Layanan', to: '/admin/kategori' },
+  { label: 'Media Library', to: '/admin/media' },
+  { label: 'Home Settings', to: '/admin/home-settings' },
+  { label: 'Site Settings', to: '/admin/site-settings' }
 ];
 
 // Helper to check if current session is strictly authenticated
@@ -237,10 +240,12 @@ export const AdminLayout = () => {
             <div className="admin-page">
               <Routes>
                 <Route path="/dashboard" element={<AdminDashboard />} />
-                <Route path="/site-settings" element={<AdminSiteSettings />} />
-                <Route path="/home-settings" element={<AdminHomeSettings />} />
+                <Route path="/contacts" element={<AdminContacts />} />
                 <Route path="/portfolio" element={<AdminPortfolio />} />
+                <Route path="/kategori" element={<AdminCategories />} />
                 <Route path="/media" element={<AdminMedia />} />
+                <Route path="/home-settings" element={<AdminHomeSettings />} />
+                <Route path="/site-settings" element={<AdminSiteSettings />} />
                 <Route path="*" element={<Navigate to="/admin/dashboard" replace />} />
               </Routes>
             </div>

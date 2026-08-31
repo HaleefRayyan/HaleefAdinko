@@ -59,9 +59,9 @@ export const AdminDashboard = () => {
   };
 
   const statCards = [
+    { label: 'Pesan Masuk (Leads)', value: stats.contacts, tone: '#c5a638', link: '/admin/contacts' },
     { label: 'Total Portfolio', value: stats.portfolio, tone: '#1d4d2d', link: '/admin/portfolio' },
-    { label: 'Pesan Masuk (Leads)', value: stats.contacts, tone: '#c5a638', link: '#messages' },
-    { label: 'Kategori Layanan', value: stats.categories, tone: '#4a6331', link: '/admin/portfolio' },
+    { label: 'Kategori Layanan', value: stats.categories, tone: '#4a6331', link: '/admin/kategori' },
     { label: 'Google Rating', value: '5.0 ★', tone: '#2f7d32', link: 'https://maps.app.goo.gl/NJwGPgzB8FpBjk8A7' }
   ];
 
@@ -82,14 +82,14 @@ export const AdminDashboard = () => {
         {statCards.map((item) => (
           <div
             key={item.label}
-            onClick={() => item.link.startsWith('/admin') && navigate(item.link)}
+            onClick={() => item.link.startsWith('/admin') ? navigate(item.link) : window.open(item.link, '_blank')}
             style={{
               background: '#ffffff',
               borderRadius: '18px',
               padding: '22px 20px',
               boxShadow: '0 10px 26px rgba(17, 24, 39, 0.05)',
               border: '1px solid rgba(17, 24, 39, 0.04)',
-              cursor: item.link.startsWith('/admin') ? 'pointer' : 'default',
+              cursor: 'pointer',
               transition: 'transform 0.2s'
             }}
           >
@@ -109,8 +109,8 @@ export const AdminDashboard = () => {
             <h3 style={{ margin: 0, color: '#111827', fontSize: '1.2rem', fontWeight: 700 }}>
               Pesan Konsultasi Masuk ({recentContacts.length})
             </h3>
-            <button onClick={loadData} style={{ background: 'none', border: 'none', color: '#1d4d2d', fontWeight: 600, cursor: 'pointer', fontSize: '0.85rem' }}>
-              ↻ Refresh
+            <button onClick={() => navigate('/admin/contacts')} style={{ background: 'none', border: 'none', color: '#1d4d2d', fontWeight: 700, cursor: 'pointer', fontSize: '0.85rem' }}>
+              Lihat Semua →
             </button>
           </div>
 
@@ -166,16 +166,10 @@ export const AdminDashboard = () => {
           <h3 style={{ margin: '0 0 16px', color: '#111827', fontSize: '1.2rem', fontWeight: 700 }}>Akses Cepat</h3>
           <div style={{ display: 'grid', gap: '10px' }}>
             <button
-              onClick={() => navigate('/admin/home-settings')}
+              onClick={() => navigate('/admin/contacts')}
               style={actionBtnStyle}
             >
-              🏠 Edit Teks Hero & Beranda
-            </button>
-            <button
-              onClick={() => navigate('/admin/site-settings')}
-              style={actionBtnStyle}
-            >
-              ⚙️ Pengaturan Kontak & SEO
+              💬 Lihat Semua Pesan &amp; Klien ({stats.contacts})
             </button>
             <button
               onClick={() => navigate('/admin/portfolio')}
@@ -184,10 +178,28 @@ export const AdminDashboard = () => {
               📷 Tambah / Edit Proyek Portfolio
             </button>
             <button
+              onClick={() => navigate('/admin/kategori')}
+              style={actionBtnStyle}
+            >
+              🏷 Kelola Kategori Layanan ({stats.categories})
+            </button>
+            <button
               onClick={() => navigate('/admin/media')}
               style={actionBtnStyle}
             >
               🖼 Buka Media Library
+            </button>
+            <button
+              onClick={() => navigate('/admin/home-settings')}
+              style={actionBtnStyle}
+            >
+              🏠 Edit Teks Hero &amp; Beranda
+            </button>
+            <button
+              onClick={() => navigate('/admin/site-settings')}
+              style={actionBtnStyle}
+            >
+              ⚙️ Pengaturan Kontak &amp; SEO
             </button>
             <button
               onClick={() => window.open('/', '_blank')}

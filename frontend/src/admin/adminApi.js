@@ -95,6 +95,25 @@ export async function getCategories() {
   return json.data;
 }
 
+export async function saveCategory(payload, id = null) {
+  const url = id ? `${apiBase}/kategori/${id}` : `${apiBase}/kategori`;
+  const method = id ? 'PUT' : 'POST';
+  const res = await fetch(url, {
+    method,
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(payload)
+  });
+  if (!res.ok) throw new Error('Failed to save category');
+  const json = await res.json();
+  return json.data;
+}
+
+export async function deleteCategory(id) {
+  const res = await fetch(`${apiBase}/kategori/${id}`, { method: 'DELETE' });
+  if (!res.ok) throw new Error('Failed to delete category');
+  return true;
+}
+
 export async function getContacts() {
   const res = await fetch(`${apiBase}/contact`);
   if (!res.ok) throw new Error('Failed to fetch contacts');
