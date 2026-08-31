@@ -71,9 +71,11 @@ export const ContactForm = ({ title = "Kirim Pesan Sekarang" }) => {
     });
   };
 
+  const DEST_WA = '6282187515651';
+
   const handleOpenWhatsApp = () => {
     if (!submittedData) return;
-    const targetCompanyPhone = cleanPhone(siteSettings.whatsapp);
+    const targetCompanyPhone = cleanPhone(siteSettings.whatsapp) || DEST_WA;
     const messageText = generateWhatsAppMessage(submittedData);
     const waUrl = `https://wa.me/${targetCompanyPhone}?text=${encodeURIComponent(messageText)}`;
     window.open(waUrl, '_blank');
@@ -108,7 +110,7 @@ export const ContactForm = ({ title = "Kirim Pesan Sekarang" }) => {
       setSubmitted(true);
 
       // Auto trigger WhatsApp open in background tab
-      const targetCompanyPhone = cleanPhone(siteSettings.whatsapp);
+      const targetCompanyPhone = cleanPhone(siteSettings.whatsapp) || DEST_WA;
       const messageText = generateWhatsAppMessage(currentData);
       setTimeout(() => {
         const waUrl = `https://wa.me/${targetCompanyPhone}?text=${encodeURIComponent(messageText)}`;

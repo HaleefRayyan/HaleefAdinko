@@ -124,7 +124,7 @@ export const SiteProvider = ({ children }) => {
   }, [siteSettings]);
 
   const cleanPhone = (phone) => {
-    if (!phone) return '6285264456566';
+    if (!phone) return '6282187515651';
     let cleaned = String(phone).replace(/\D/g, '');
     if (cleaned.startsWith('0')) {
       cleaned = '62' + cleaned.slice(1);
