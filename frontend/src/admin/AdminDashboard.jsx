@@ -60,9 +60,9 @@ export const AdminDashboard = () => {
 
   const statCards = [
     { label: 'Total Portfolio', value: stats.portfolio, tone: '#1d4d2d', link: '/admin/portfolio' },
-    { label: 'Ulasan / Testimoni', value: stats.testimoni, tone: '#2f7d32', link: '/admin/testimoni' },
     { label: 'Pesan Masuk (Leads)', value: stats.contacts, tone: '#c5a638', link: '#messages' },
-    { label: 'Kategori Layanan', value: stats.categories, tone: '#4a6331', link: '/admin/portfolio' }
+    { label: 'Kategori Layanan', value: stats.categories, tone: '#4a6331', link: '/admin/portfolio' },
+    { label: 'Google Rating', value: '5.0 ★', tone: '#2f7d32', link: 'https://maps.app.goo.gl/NJwGPgzB8FpBjk8A7' }
   ];
 
   return (
@@ -182,12 +182,6 @@ export const AdminDashboard = () => {
               style={actionBtnStyle}
             >
               📷 Tambah / Edit Proyek Portfolio
-            </button>
-            <button
-              onClick={() => navigate('/admin/testimoni')}
-              style={actionBtnStyle}
-            >
-              ⭐ Kelola Testimoni & Review
             </button>
             <button
               onClick={() => navigate('/admin/media')}

@@ -13,7 +13,6 @@ const navItems = [
   { label: 'Site Settings', to: '/admin/site-settings' },
   { label: 'Home Settings', to: '/admin/home-settings' },
   { label: 'Portfolio', to: '/admin/portfolio' },
-  { label: 'Testimoni', to: '/admin/testimoni' },
   { label: 'Media', to: '/admin/media' }
 ];
 
@@ -241,7 +240,6 @@ export const AdminLayout = () => {
                 <Route path="/site-settings" element={<AdminSiteSettings />} />
                 <Route path="/home-settings" element={<AdminHomeSettings />} />
                 <Route path="/portfolio" element={<AdminPortfolio />} />
-                <Route path="/testimoni" element={<AdminTestimoni />} />
                 <Route path="/media" element={<AdminMedia />} />
                 <Route path="*" element={<Navigate to="/admin/dashboard" replace />} />
               </Routes>
