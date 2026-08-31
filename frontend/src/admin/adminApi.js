@@ -112,6 +112,28 @@ export async function getMediaList() {
   const res = await fetch(`${apiBase}/media`);
   if (!res.ok) throw new Error('Failed to fetch media');
   const json = await res.json();
-  return json.data;
+  return json.data || [];
 }
+
+export async function uploadMediaFile(file) {
+  const formData = new FormData();
+  formData.append('image', file);
+  const res = await fetch(`${apiBase}/media/upload`, {
+    method: 'POST',
+    body: formData
+  });
+  if (!res.ok) {
+    const errorJson = await res.json().catch(() => ({}));
+    throw new Error(errorJson.message || 'Upload gambar gagal');
+  }
+  const json = await res.json();
+  return json.data?.url || (json.data?.name ? `${apiBase}/assets/${json.data.name}` : '');
+}
+
+export async function deleteMediaFile(filename) {
+  const res = await fetch(`${apiBase}/media/${filename}`, { method: 'DELETE' });
+  if (!res.ok) throw new Error('Failed to delete media');
+  return true;
+}
+
 
