@@ -21,7 +21,7 @@ export const ProjectCard = ({ project }) => {
   return (
     <div className="project-card">
       <div className="project-img-wrapper" style={{ position: 'relative', overflow: 'hidden', borderRadius: '18px 18px 0 0' }}>
-        <div style={{ position: 'relative', height: '260px' }}>
+        <div style={{ position: 'relative', height: 'clamp(200px, 35vw, 260px)' }}>
           <img src={activeImage} alt={project.title} loading="lazy" style={{ width: '100%', height: '100%', objectFit: 'cover', display: 'block' }} />
 
           {hasMultipleImages && (

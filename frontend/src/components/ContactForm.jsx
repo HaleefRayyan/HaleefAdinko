@@ -200,7 +200,7 @@ export const ContactForm = ({ title = "Kirim Pesan Sekarang" }) => {
             </div>
           )}
 
-          <div style={{ display: 'flex', justifyContent: 'flex-end', gap: '10px', marginTop: '10px' }}>
+          <div style={{ display: 'flex', justifyContent: 'flex-end', gap: '10px', marginTop: '14px', flexWrap: 'wrap' }}>
             <button 
               type="button" 
               onClick={() => {
@@ -208,13 +208,18 @@ export const ContactForm = ({ title = "Kirim Pesan Sekarang" }) => {
                 window.open(`tel:+${companyPhone}`, '_self');
               }}
               className="btn-form-submit"
-              style={{ background: '#f0f0f0', color: '#111827' }}
+              style={{ background: '#f0f0f0', color: '#111827', flex: '1 1 140px', justifyContent: 'center' }}
               title="Hubungi langsung via telepon"
             >
-              <span>Telepon Langsung</span>
+              <span>Telepon</span>
               <Phone size={15} />
             </button>
-            <button type="submit" disabled={sending} className="btn-form-submit">
+            <button 
+              type="submit" 
+              disabled={sending} 
+              className="btn-form-submit"
+              style={{ flex: '1 1 180px', justifyContent: 'center' }}
+            >
               <span>{sending ? 'Menyiapkan...' : 'Kirim ke WhatsApp'}</span>
               <MessageCircle size={15} />
             </button>

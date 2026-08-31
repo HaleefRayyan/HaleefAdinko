@@ -73,7 +73,7 @@ export const AboutGhazi = () => {
             </div>
 
             {/* Image Carousel */}
-            <div style={{ position: 'relative', borderRadius: '24px', overflow: 'hidden', height: '360px', boxShadow: 'var(--shadow-md)' }}>
+            <div style={{ position: 'relative', borderRadius: '24px', overflow: 'hidden', height: 'clamp(230px, 45vw, 360px)', boxShadow: 'var(--shadow-md)' }}>
               <img 
                 src={sportsSlides[activeSlide]} 
                 alt="Lapangan Olahraga Ghazi" 
