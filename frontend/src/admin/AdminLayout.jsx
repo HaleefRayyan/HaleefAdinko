@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { Navigate, NavLink, Route, Routes, useLocation, useNavigate } from 'react-router-dom';
 import { AdminDashboard } from './AdminDashboard';
 import { AdminSiteSettings } from './AdminSiteSettings';
@@ -17,30 +17,62 @@ const navItems = [
   { label: 'Media', to: '/admin/media' }
 ];
 
+// Helper to check if current session is strictly authenticated
+const checkIsAuthenticated = () => {
+  // Check active session first
+  const isSessionAuth = sessionStorage.getItem('adminAuth') === 'true';
+  if (isSessionAuth) return true;
+
+  // Check persistent login with expiry timestamp
+  const isLocalAuth = localStorage.getItem('adminAuth') === 'true';
+  const expiry = Number(localStorage.getItem('adminAuthExpiry') || 0);
+  if (isLocalAuth && expiry > Date.now()) {
+    return true;
+  }
+
+  // Clear stale auth if expired
+  if (isLocalAuth && expiry && expiry <= Date.now()) {
+    localStorage.removeItem('adminAuth');
+    localStorage.removeItem('adminUser');
+    localStorage.removeItem('adminAuthExpiry');
+  }
+
+  return false;
+};
+
 export const AdminLayout = () => {
   const navigate = useNavigate();
   const location = useLocation();
-  const isAuthenticated = localStorage.getItem('adminAuth') === 'true';
+  const [isAuthenticated, setIsAuthenticated] = useState(checkIsAuthenticated);
+
+  // Re-verify auth on route change
+  useEffect(() => {
+    setIsAuthenticated(checkIsAuthenticated());
+  }, [location.pathname]);
 
   const handleLogout = () => {
+    sessionStorage.removeItem('adminAuth');
+    sessionStorage.removeItem('adminUser');
+    sessionStorage.removeItem('adminAuthTimestamp');
     localStorage.removeItem('adminAuth');
-    navigate('/admin/login');
+    localStorage.removeItem('adminUser');
+    localStorage.removeItem('adminAuthExpiry');
+    setIsAuthenticated(false);
+    navigate('/admin/login', { replace: true });
   };
 
-  if (!isAuthenticated && location.pathname !== '/admin/login') {
-    return <Navigate to="/admin/login" replace />;
+  const handleLoginSuccess = () => {
+    setIsAuthenticated(true);
+  };
+
+  // If user is NOT logged in:
+  if (!isAuthenticated) {
+    return <AdminLogin onLoginSuccess={handleLoginSuccess} />;
   }
 
-  if (location.pathname === '/admin') {
-    return <Navigate to={isAuthenticated ? '/admin/dashboard' : '/admin/login'} replace />;
-  }
-
-  if (location.pathname === '/admin/login' && isAuthenticated) {
+  // If user is logged in and visits root `/admin` or `/admin/login`, redirect to dashboard
+  if (location.pathname === '/admin' || location.pathname === '/admin/' || location.pathname === '/admin/login') {
     return <Navigate to="/admin/dashboard" replace />;
-  }
-
-  if (location.pathname === '/admin/login') {
-    return <AdminLogin />;
   }
 
   return (
