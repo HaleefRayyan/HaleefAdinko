@@ -1,5 +1,5 @@
 require('dotenv').config()
-const PORT = process.env.PORT || 3306;
+const PORT = process.env.PORT || 4000;
 const express = require('express');
 const cors = require('cors');
 
@@ -52,6 +52,17 @@ app.use((err, req, res, next) => {
 });
 
 
-app.listen(PORT, () => {
+const server = app.listen(PORT, () => {
     console.log(`Server berhasil di running di port ${PORT}`);
-})
+    console.log(`Environment: ${process.env.NODE_ENV || 'development'}`);
+    console.log(`DB Host: ${process.env.MYSQLHOST || process.env.DB_HOST || 'localhost'}`);
+});
+
+server.on('error', (err) => {
+    console.error('Server failed to start:', err);
+    process.exit(1);
+});
+
+process.on('unhandledRejection', (reason, promise) => {
+    console.error('Unhandled Rejection at:', promise, 'reason:', reason);
+});
