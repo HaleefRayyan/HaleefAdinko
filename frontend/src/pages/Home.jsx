@@ -513,7 +513,7 @@ export const Home = () => {
               <div className="map-embed-wrapper">
                 <iframe
                   title="Google Maps Location Adinko"
-                  src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d15958.826554559868!2d101.442!3d0.485!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x31d5a92a543e371b%3A0x6b405553e1a0b!2sTangkerang%20Barat%2C%20Pekanbaru!5e0!3m2!1sid!2sid!4v1700000000000!5m2!1sid!2sid"
+                  src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d15958.672826206286!2d101.40919038715819!3d0.4970186999999947!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x31d5af7e9892ed59%3A0xcc4df6c7514c06e1!2sAdinko%20rumput%20sintetis%20pekanbaru!5e0!3m2!1sen!2sid!4v1788161205441!5m2!1sen!2sid"
                   allowFullScreen=""
                   loading="lazy"
                   referrerPolicy="no-referrer-when-downgrade"
