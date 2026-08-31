@@ -33,20 +33,18 @@ export const ContactForm = ({ title = "Kirim Pesan Sekarang" }) => {
     });
 
     const messageParts = [
-      `📋 *FORMULIR KONSULTASI ${siteSettings.site_name || 'ADINKO & GHAZISPORTSHUB'}*`,
+      `FORMULIR KONSULTASI ${siteSettings.site_name || 'ADINKO & GHAZISPORTSHUB'}`,
       '',
-      `📅 *Waktu:* ${timestamp}`,
+      `Waktu: ${timestamp}`,
       '',
-      '👤 *DATA KLIEN:*',
-      `• *Nama Lengkap:* ${data.nama_lengkap}`,
-      `• *No. WhatsApp:* ${data.no_whatsapp}`,
-      `• *Lokasi Proyek:* ${data.lokasi}`,
+      'DATA KLIEN:',
+      `Nama Lengkap: ${data.nama_lengkap}`,
+      `No. WhatsApp: ${data.no_whatsapp}`,
+      `Lokasi Proyek: ${data.lokasi}`,
       '',
-      '🎯 *DETAIL KEBUTUHAN:*',
-      `• *Kategori Layanan:* ${kategoriLabel}`,
-      `• *Keterangan/Ukuran:* ${data.keterangan ? data.keterangan : '(Belum ada keterangan khusus)'}`,
-      '',
-      '✅ *Catatan:* Halo Admin, mohon info estimasi biaya/survey lokasi untuk kebutuhan di atas. Terima kasih!'
+      'DETAIL KEBUTUHAN:',
+      `Kategori Layanan: ${kategoriLabel}`,
+      `Keterangan/Ukuran: ${data.keterangan ? data.keterangan : '-'}`
     ];
 
     return messageParts.join('\n');
@@ -143,7 +141,7 @@ export const ContactForm = ({ title = "Kirim Pesan Sekarang" }) => {
             <CheckCircle2 size={24} color="#059669" style={{ flexShrink: 0 }} />
             <div>
               <h4 style={{ fontSize: '0.95rem', fontWeight: 700, color: '#065f46', margin: 0 }}>
-                Pesan Konsultasi Berhasil Dibuat! ✨
+                Pesan Konsultasi Berhasil Dibuat!
               </h4>
               <p style={{ fontSize: '0.8rem', color: '#047857', margin: '2px 0 0' }}>
                 Pesan otomatis di bawah siap diteruskan ke WhatsApp Customer Care kami.
@@ -153,53 +151,49 @@ export const ContactForm = ({ title = "Kirim Pesan Sekarang" }) => {
 
           {/* WhatsApp Chat Preview Bubble */}
           <div style={{
-            background: '#EFEAE2',
-            backgroundImage: `radial-gradient(#d1c7b7 1px, transparent 1px)`,
-            backgroundSize: '16px 16px',
+            background: '#F9FAFB',
             borderRadius: '16px',
             padding: '16px',
-            border: '1px solid #e0d7c7'
+            border: '1px solid #E5E7EB'
           }}>
             <div style={{
               background: '#FFFFFF',
-              borderRadius: '14px 14px 14px 2px',
+              borderRadius: '12px',
               padding: '16px 18px',
-              boxShadow: '0 2px 8px rgba(0,0,0,0.06)',
-              position: 'relative'
+              boxShadow: '0 2px 8px rgba(0,0,0,0.04)',
+              border: '1px solid #F3F4F6'
             }}>
-              <div style={{ fontSize: '0.82rem', fontWeight: 800, color: 'var(--green-700, #1d4d2d)', marginBottom: '8px', borderBottom: '1px solid #f3f4f6', paddingBottom: '6px' }}>
-                📋 FORMULIR KONSULTASI {siteSettings.site_name || 'ADINKO & GHAZISPORTSHUB'}
+              <div style={{ fontSize: '0.86rem', fontWeight: 800, color: 'var(--green-700, #1d4d2d)', marginBottom: '10px', borderBottom: '1px solid #f3f4f6', paddingBottom: '6px' }}>
+                FORMULIR KONSULTASI {siteSettings.site_name || 'ADINKO & GHAZISPORTSHUB'}
               </div>
 
-              <div style={{ display: 'flex', flexDirection: 'column', gap: '6px', fontSize: '0.86rem', color: '#1f2937', lineHeight: 1.5 }}>
+              <div style={{ display: 'flex', flexDirection: 'column', gap: '6px', fontSize: '0.86rem', color: '#1f2937', lineHeight: 1.6 }}>
                 <div>
-                  <span style={{ color: '#6b7280', fontWeight: 600 }}>👤 Nama Klien: </span>
+                  <span style={{ color: '#6b7280', fontWeight: 600 }}>Nama Lengkap: </span>
                   <strong>{submittedData.nama_lengkap}</strong>
                 </div>
                 <div>
-                  <span style={{ color: '#6b7280', fontWeight: 600 }}>📱 No. WhatsApp: </span>
+                  <span style={{ color: '#6b7280', fontWeight: 600 }}>No. WhatsApp: </span>
                   <strong>{submittedData.no_whatsapp}</strong>
                 </div>
                 <div>
-                  <span style={{ color: '#6b7280', fontWeight: 600 }}>📍 Lokasi Proyek: </span>
+                  <span style={{ color: '#6b7280', fontWeight: 600 }}>Lokasi Proyek: </span>
                   <strong>{submittedData.lokasi}</strong>
                 </div>
                 <div>
-                  <span style={{ color: '#6b7280', fontWeight: 600 }}>🎯 Layanan Dipilih: </span>
+                  <span style={{ color: '#6b7280', fontWeight: 600 }}>Kategori Layanan: </span>
                   <span style={{ background: '#ecfdf5', color: '#065f46', padding: '2px 8px', borderRadius: '50px', fontWeight: 700, fontSize: '0.8rem' }}>
                     {getSelectedCategoryName(submittedData.kategori)}
                   </span>
                 </div>
-                {submittedData.keterangan && (
-                  <div style={{ background: '#f9fafb', padding: '8px 12px', borderRadius: '8px', marginTop: '4px', borderLeft: '3px solid var(--green-600, #1d4d2d)' }}>
-                    <span style={{ color: '#6b7280', fontSize: '0.78rem', display: 'block', fontWeight: 600 }}>Detail Kebutuhan:</span>
-                    <span style={{ fontSize: '0.84rem' }}>{submittedData.keterangan}</span>
-                  </div>
-                )}
+                <div>
+                  <span style={{ color: '#6b7280', fontWeight: 600 }}>Keterangan/Ukuran: </span>
+                  <span>{submittedData.keterangan || '-'}</span>
+                </div>
               </div>
 
-              <div style={{ textAlign: 'right', marginTop: '8px', fontSize: '0.72rem', color: '#9ca3af' }}>
-                ✓✓ Disiapkan otomatis
+              <div style={{ textAlign: 'right', marginTop: '10px', fontSize: '0.75rem', color: '#9ca3af' }}>
+                Disiapkan otomatis
               </div>
             </div>
           </div>
