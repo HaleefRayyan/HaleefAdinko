@@ -4,7 +4,7 @@ const defaultSiteSettings = {
     site_name: 'Haleef Adinko & GhaziSportsHub',
     tagline: 'Penyedia solusi rumput sintetis dan fasilitas olahraga profesional terbaik di Pekanbaru & Riau.',
     email: 'hello@haleefadinko.com',
-    whatsapp: '6285264456566',
+    whatsapp: '6282187515651',
     address: 'Jl. Todak No.113 Tangkerang Barat, Kec. Marpoyan Damai, Kota Pekanbaru, Riau',
     primary_color: '#1d4d2d',
     secondary_color: '#d4a72c',

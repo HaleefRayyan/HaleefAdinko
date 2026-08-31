@@ -4,13 +4,13 @@ export const siteConfig = {
   since: "Pekanbaru Sejak 2019",
   contacts: {
     address: "Jl. Todak No.113 Tangkerang Barat, Kec. Marpoyan Damai, Kota Pekanbaru, Riau",
-    whatsappAdinko: "0852-6445-6566",
-    whatsappAdinko2: "0813-9094-1740",
-    whatsappGhazi: "0852-6445-6566",
+    whatsappAdinko: "0821-8751-5651",
+    whatsappAdinko2: "0821-8751-5651",
+    whatsappGhazi: "0821-8751-5651",
     instagramAdinko: "@adinko.pekanbaru",
     instagramGhazi: "@ghazisportshub",
-    mapsUrl: "https://maps.google.com/?q=Jl.+Todak+No.113+Tangkerang+Barat+Pekanbaru",
-    directWaNumber: "6285264456566"
+    mapsUrl: "https://maps.app.goo.gl/NJwGPgzB8FpBjk8A7",
+    directWaNumber: "6282187515651"
   },
   stats: [
     { value: "500+", label: "Proyek Selesai" },

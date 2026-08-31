@@ -17,35 +17,46 @@ const getAllContacts = async (req, res) => {
 
 const createNewContact = async (req, res) => {
     const { body } = req;
-    console.log('createNewContact body:', body);
-    const required = ['nama_lengkap', 'no_whatsapp', 'lokasi', 'kategori'];
-    const missing = required.filter(k => !body || body[k] === undefined || body[k] === null || String(body[k]).trim() === '');
-    if (missing.length) {
+    console.log('createNewContact received body:', body);
+
+    if (!body || !body.nama_lengkap || !body.no_whatsapp || !body.lokasi) {
         return res.status(400).json({
-            message: 'Missing required fields',
-            missing
+            message: 'Nama lengkap, nomor WhatsApp, dan lokasi proyek wajib diisi.',
+            data: null
         });
     }
-    if (!/^\d+$/.test(String(body.no_whatsapp))) {
+
+    const cleanNoWa = String(body.no_whatsapp).replace(/\D/g, '');
+    if (cleanNoWa.length < 5) {
         return res.status(400).json({
-            message: 'Invalid WhatsApp number',
-            detail: 'no_whatsapp must contain numbers only'
+            message: 'Nomor WhatsApp tidak valid.',
+            data: null
         });
     }
+
+    const cleanData = {
+        nama_lengkap: String(body.nama_lengkap).trim(),
+        no_whatsapp: cleanNoWa,
+        lokasi: String(body.lokasi).trim(),
+        keterangan: body.keterangan ? String(body.keterangan).trim() : '',
+        kategori: Number(body.kategori) || 1
+    };
+
     try {
-        const [result] = await contactModel.createNewContact(body);
+        const [result] = await contactModel.createNewContact(cleanData);
         const insertId = result && result.insertId ? result.insertId : null;
-        res.status(201).json({
+        return res.status(201).json({
             message: "Create new contact success",
-            data: insertId ? { id: insertId, ...body } : body
+            data: insertId ? { id: insertId, ...cleanData } : cleanData
         });
     } catch (error) {
-        res.status(500).json({
+        console.error('createNewContact error:', error);
+        return res.status(500).json({
             message: "Server Error",
-            serverMessage: error,
+            serverMessage: error.message || error,
         });
     }
-}
+};
 
 const updateContact = async (req, res) => {
     const { id } = req.params;
