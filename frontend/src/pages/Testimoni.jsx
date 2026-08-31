@@ -335,7 +335,7 @@ export const Testimoni = () => {
           {/* Google Summary Card */}
           <GoogleSummaryCard
             place={placeInfo}
-            googleMapsUrl={siteSettings?.google_reviews_url || 'https://maps.app.goo.gl/adinko'}
+            googleMapsUrl={siteSettings?.google_reviews_url || 'https://maps.app.goo.gl/NJwGPgzB8FpBjk8A7'}
             loading={loading}
           />
 
