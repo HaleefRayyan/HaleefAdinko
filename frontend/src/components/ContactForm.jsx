@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { CheckCircle2, Phone, MessageCircle } from 'lucide-react';
+import { CheckCircle2, Phone, MessageCircle, Copy, Check, ArrowRight, RotateCcw, ExternalLink } from 'lucide-react';
 import { useSiteContext } from '../context/SiteContext';
 
 export const ContactForm = ({ title = "Kirim Pesan Sekarang" }) => {
@@ -13,31 +13,40 @@ export const ContactForm = ({ title = "Kirim Pesan Sekarang" }) => {
     keterangan: ''
   });
   const [submitted, setSubmitted] = useState(false);
+  const [submittedData, setSubmittedData] = useState(null);
+  const [copied, setCopied] = useState(false);
   const [error, setError] = useState('');
   const [sending, setSending] = useState(false);
 
-  const generateWhatsAppMessage = () => {
+  const generateWhatsAppMessage = (data = formData) => {
     const matchedCategory = categories.find(
-      (k) => (k.id || k.idkategori_layanan) === Number(formData.kategori)
+      (k) => (k.id || k.idkategori_layanan) === Number(data.kategori)
     );
     const kategoriLabel = matchedCategory?.kategori_layanan || 'Layanan Umum';
-    const timestamp = new Date().toLocaleDateString('id-ID', { weekday: 'short', year: 'numeric', month: 'short', day: 'numeric' });
+    const timestamp = new Date().toLocaleDateString('id-ID', { 
+      weekday: 'long', 
+      year: 'numeric', 
+      month: 'long', 
+      day: 'numeric',
+      hour: '2-digit',
+      minute: '2-digit'
+    });
 
     const messageParts = [
       `📋 *FORMULIR KONSULTASI ${siteSettings.site_name || 'ADINKO & GHAZISPORTSHUB'}*`,
       '',
-      `📅 Tanggal: ${timestamp}`,
+      `📅 *Waktu:* ${timestamp}`,
       '',
-      '👤 *Data Klien:*',
-      `• Nama: ${formData.nama_lengkap}`,
-      `• WhatsApp Klien: ${formData.no_whatsapp}`,
-      `• Lokasi Proyek: ${formData.lokasi}`,
+      '👤 *DATA KLIEN:*',
+      `• *Nama Lengkap:* ${data.nama_lengkap}`,
+      `• *No. WhatsApp:* ${data.no_whatsapp}`,
+      `• *Lokasi Proyek:* ${data.lokasi}`,
       '',
-      '🎯 *Detail Kebutuhan:*',
-      `• Layanan: ${kategoriLabel}`,
-      `• Keterangan: ${formData.keterangan || '(Tidak ada keterangan tambahan)'}`,
+      '🎯 *DETAIL KEBUTUHAN:*',
+      `• *Kategori Layanan:* ${kategoriLabel}`,
+      `• *Keterangan/Ukuran:* ${data.keterangan ? data.keterangan : '(Belum ada keterangan khusus)'}`,
       '',
-      '✅ Mohon hubungi saya untuk survey dan penawaran terbaik.'
+      '✅ *Catatan:* Halo Admin, mohon info estimasi biaya/survey lokasi untuk kebutuhan di atas. Terima kasih!'
     ];
 
     return messageParts.join('\n');
@@ -55,26 +64,43 @@ export const ContactForm = ({ title = "Kirim Pesan Sekarang" }) => {
     if (error) setError('');
   };
 
+  const handleCopyMessage = () => {
+    if (!submittedData) return;
+    const msg = generateWhatsAppMessage(submittedData);
+    navigator.clipboard.writeText(msg).then(() => {
+      setCopied(true);
+      setTimeout(() => setCopied(false), 2500);
+    });
+  };
+
+  const handleOpenWhatsApp = () => {
+    if (!submittedData) return;
+    const targetCompanyPhone = cleanPhone(siteSettings.whatsapp);
+    const messageText = generateWhatsAppMessage(submittedData);
+    const waUrl = `https://wa.me/${targetCompanyPhone}?text=${encodeURIComponent(messageText)}`;
+    window.open(waUrl, '_blank');
+  };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
 
     if (!formData.nama_lengkap.trim() || !formData.no_whatsapp.trim() || !formData.lokasi.trim()) {
-      setError('Mohon lengkapi Nama, Nomor WhatsApp, dan Lokasi Proyek.');
+      setError('Mohon lengkapi Nama Lengkap, Nomor WhatsApp, dan Lokasi Proyek.');
       return;
     }
 
     setSending(true);
-    const targetCompanyPhone = cleanPhone(siteSettings.whatsapp);
-    const messageText = generateWhatsAppMessage();
+    const currentData = { ...formData };
+    setSubmittedData(currentData);
 
-    // Post inquiry lead to backend database
+    // Save lead to backend database
     try {
       await fetch(`${apiBase}/contact`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
-          ...formData,
-          kategori: Number(formData.kategori) || 1
+          ...currentData,
+          kategori: Number(currentData.kategori) || 1
         })
       });
     } catch (err) {
@@ -82,35 +108,178 @@ export const ContactForm = ({ title = "Kirim Pesan Sekarang" }) => {
     } finally {
       setSending(false);
       setSubmitted(true);
-      // Open WhatsApp chat to Company Phone number
+
+      // Auto trigger WhatsApp open in background tab
+      const targetCompanyPhone = cleanPhone(siteSettings.whatsapp);
+      const messageText = generateWhatsAppMessage(currentData);
       setTimeout(() => {
         const waUrl = `https://wa.me/${targetCompanyPhone}?text=${encodeURIComponent(messageText)}`;
         window.open(waUrl, '_blank');
-      }, 400);
+      }, 500);
     }
+  };
+
+  const getSelectedCategoryName = (kategoriId) => {
+    const cat = categories.find((c) => (c.id || c.idkategori_layanan) === Number(kategoriId));
+    return cat?.kategori_layanan || 'Layanan Rumput Sintetis & Olahraga';
   };
 
   return (
     <div className="form-card">
-      <h3 className="form-title">{title}</h3>
+      <h3 className="form-title">{submitted ? 'Konfirmasi Pesan Otomatis' : title}</h3>
 
-      {submitted ? (
-        <div style={{ textAlign: 'center', padding: '30px 20px', background: '#FFFFFF', borderRadius: '12px' }}>
-          <CheckCircle2 size={48} color="#1d4d2d" style={{ margin: '0 auto 12px auto' }} />
-          <h4 style={{ fontSize: '1.2rem', fontWeight: 700, color: '#121212' }}>Pesan Anda Telah Disiapkan! ✨</h4>
-          <p style={{ fontSize: '0.9rem', color: '#667068', marginTop: '6px' }}>
-            Membuka WhatsApp untuk mengirim detail konsultasi langsung ke tim {siteSettings.site_name || 'Adinko & GhaziSportsHub'}...
-          </p>
-          <p style={{ fontSize: '0.8rem', color: '#999', marginTop: '12px' }}>
-            💡 Tim kami biasanya merespons dalam 1 jam
-          </p>
-          <button 
-            type="button" 
-            onClick={() => { setSubmitted(false); setError(''); }}
-            style={{ marginTop: '18px', color: '#1d4d2d', fontWeight: 600, fontSize: '0.85rem', cursor: 'pointer', background: 'none', border: 'none' }}
-          >
-            ← Kirim pesan baru
-          </button>
+      {submitted && submittedData ? (
+        <div style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
+          {/* Header Success Badge */}
+          <div style={{ 
+            display: 'flex', 
+            alignItems: 'center', 
+            gap: '12px', 
+            background: '#ecfdf5', 
+            border: '1.5px solid #a7f3d0', 
+            padding: '14px 16px', 
+            borderRadius: '14px' 
+          }}>
+            <CheckCircle2 size={24} color="#059669" style={{ flexShrink: 0 }} />
+            <div>
+              <h4 style={{ fontSize: '0.95rem', fontWeight: 700, color: '#065f46', margin: 0 }}>
+                Pesan Konsultasi Berhasil Dibuat! ✨
+              </h4>
+              <p style={{ fontSize: '0.8rem', color: '#047857', margin: '2px 0 0' }}>
+                Pesan otomatis di bawah siap diteruskan ke WhatsApp Customer Care kami.
+              </p>
+            </div>
+          </div>
+
+          {/* WhatsApp Chat Preview Bubble */}
+          <div style={{
+            background: '#EFEAE2',
+            backgroundImage: `radial-gradient(#d1c7b7 1px, transparent 1px)`,
+            backgroundSize: '16px 16px',
+            borderRadius: '16px',
+            padding: '16px',
+            border: '1px solid #e0d7c7'
+          }}>
+            <div style={{
+              background: '#FFFFFF',
+              borderRadius: '14px 14px 14px 2px',
+              padding: '16px 18px',
+              boxShadow: '0 2px 8px rgba(0,0,0,0.06)',
+              position: 'relative'
+            }}>
+              <div style={{ fontSize: '0.82rem', fontWeight: 800, color: 'var(--green-700, #1d4d2d)', marginBottom: '8px', borderBottom: '1px solid #f3f4f6', paddingBottom: '6px' }}>
+                📋 FORMULIR KONSULTASI {siteSettings.site_name || 'ADINKO & GHAZISPORTSHUB'}
+              </div>
+
+              <div style={{ display: 'flex', flexDirection: 'column', gap: '6px', fontSize: '0.86rem', color: '#1f2937', lineHeight: 1.5 }}>
+                <div>
+                  <span style={{ color: '#6b7280', fontWeight: 600 }}>👤 Nama Klien: </span>
+                  <strong>{submittedData.nama_lengkap}</strong>
+                </div>
+                <div>
+                  <span style={{ color: '#6b7280', fontWeight: 600 }}>📱 No. WhatsApp: </span>
+                  <strong>{submittedData.no_whatsapp}</strong>
+                </div>
+                <div>
+                  <span style={{ color: '#6b7280', fontWeight: 600 }}>📍 Lokasi Proyek: </span>
+                  <strong>{submittedData.lokasi}</strong>
+                </div>
+                <div>
+                  <span style={{ color: '#6b7280', fontWeight: 600 }}>🎯 Layanan Dipilih: </span>
+                  <span style={{ background: '#ecfdf5', color: '#065f46', padding: '2px 8px', borderRadius: '50px', fontWeight: 700, fontSize: '0.8rem' }}>
+                    {getSelectedCategoryName(submittedData.kategori)}
+                  </span>
+                </div>
+                {submittedData.keterangan && (
+                  <div style={{ background: '#f9fafb', padding: '8px 12px', borderRadius: '8px', marginTop: '4px', borderLeft: '3px solid var(--green-600, #1d4d2d)' }}>
+                    <span style={{ color: '#6b7280', fontSize: '0.78rem', display: 'block', fontWeight: 600 }}>Detail Kebutuhan:</span>
+                    <span style={{ fontSize: '0.84rem' }}>{submittedData.keterangan}</span>
+                  </div>
+                )}
+              </div>
+
+              <div style={{ textAlign: 'right', marginTop: '8px', fontSize: '0.72rem', color: '#9ca3af' }}>
+                ✓✓ Disiapkan otomatis
+              </div>
+            </div>
+          </div>
+
+          {/* Action Buttons */}
+          <div style={{ display: 'flex', flexDirection: 'column', gap: '8px', marginTop: '6px' }}>
+            <button 
+              type="button" 
+              onClick={handleOpenWhatsApp}
+              className="btn-primary-hero"
+              style={{
+                width: '100%',
+                justifyContent: 'center',
+                background: '#25D366',
+                color: '#FFFFFF',
+                boxShadow: '0 6px 20px rgba(37, 211, 102, 0.35)',
+                padding: '13px 20px',
+                fontSize: '0.92rem'
+              }}
+            >
+              <MessageCircle size={18} />
+              <span>Buka WhatsApp Sekarang</span>
+              <ExternalLink size={15} />
+            </button>
+
+            <div style={{ display: 'flex', gap: '8px' }}>
+              <button 
+                type="button" 
+                onClick={handleCopyMessage}
+                style={{
+                  flex: 1,
+                  display: 'inline-flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  gap: '6px',
+                  padding: '10px 14px',
+                  borderRadius: '50px',
+                  background: copied ? '#ecfdf5' : '#FFFFFF',
+                  color: copied ? '#065f46' : '#374151',
+                  border: '1.5px solid',
+                  borderColor: copied ? '#059669' : '#e5e7eb',
+                  fontWeight: 600,
+                  fontSize: '0.84rem',
+                  cursor: 'pointer',
+                  transition: 'all 0.2s'
+                }}
+              >
+                {copied ? <Check size={16} /> : <Copy size={16} />}
+                <span>{copied ? 'Pesan Tersalin!' : 'Salin Teks Pesan'}</span>
+              </button>
+
+              <button 
+                type="button" 
+                onClick={() => {
+                  setSubmitted(false);
+                  setSubmittedData(null);
+                  setError('');
+                }}
+                style={{
+                  flex: 1,
+                  display: 'inline-flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  gap: '6px',
+                  padding: '10px 14px',
+                  borderRadius: '50px',
+                  background: '#f3f4f6',
+                  color: '#4b5563',
+                  fontWeight: 600,
+                  fontSize: '0.84rem',
+                  cursor: 'pointer',
+                  border: 'none',
+                  transition: 'all 0.2s'
+                }}
+              >
+                <RotateCcw size={15} />
+                <span>Kirim Pesan Baru</span>
+              </button>
+            </div>
+          </div>
         </div>
       ) : (
         <form onSubmit={handleSubmit}>
