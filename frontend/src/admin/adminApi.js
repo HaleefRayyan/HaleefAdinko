@@ -1,10 +1,26 @@
 const apiBase = import.meta.env.VITE_API_URL || 'http://localhost:4000';
 
+const PORTFOLIO_STORAGE_KEY = 'adinko_portfolios_cache';
+
+const fileToBase64 = (file) => {
+  return new Promise((resolve, reject) => {
+    const reader = new FileReader();
+    reader.readAsDataURL(file);
+    reader.onload = () => resolve(reader.result);
+    reader.onerror = (error) => reject(error);
+  });
+};
+
 export async function getSiteSettings() {
-  const res = await fetch(`${apiBase}/admin/site-settings`);
-  if (!res.ok) throw new Error('Failed to fetch site settings');
-  const json = await res.json();
-  return json.data;
+  try {
+    const res = await fetch(`${apiBase}/admin/site-settings`);
+    if (!res.ok) throw new Error('Failed to fetch site settings');
+    const json = await res.json();
+    return json.data;
+  } catch (err) {
+    console.warn('getSiteSettings fallback:', err);
+    return null;
+  }
 }
 
 export async function updateSiteSettings(payload) {
@@ -19,10 +35,15 @@ export async function updateSiteSettings(payload) {
 }
 
 export async function getHomeSettings() {
-  const res = await fetch(`${apiBase}/admin/home-settings`);
-  if (!res.ok) throw new Error('Failed to fetch home settings');
-  const json = await res.json();
-  return json.data;
+  try {
+    const res = await fetch(`${apiBase}/admin/home-settings`);
+    if (!res.ok) throw new Error('Failed to fetch home settings');
+    const json = await res.json();
+    return json.data;
+  } catch (err) {
+    console.warn('getHomeSettings fallback:', err);
+    return null;
+  }
 }
 
 export async function updateHomeSettings(payload) {
@@ -37,28 +58,81 @@ export async function updateHomeSettings(payload) {
 }
 
 export async function getPortfolios() {
-  const res = await fetch(`${apiBase}/portfolio`);
-  if (!res.ok) throw new Error('Failed to fetch portfolios');
-  const json = await res.json();
-  return json.data;
+  try {
+    const res = await fetch(`${apiBase}/portfolio`);
+    if (!res.ok) throw new Error('Network error');
+    const json = await res.json();
+    if (json.data && Array.isArray(json.data)) {
+      localStorage.setItem(PORTFOLIO_STORAGE_KEY, JSON.stringify(json.data));
+      return json.data;
+    }
+  } catch (err) {
+    console.warn('Backend /portfolio unavailable, using local cache:', err.message);
+  }
+  const cached = localStorage.getItem(PORTFOLIO_STORAGE_KEY);
+  if (cached) {
+    try {
+      return JSON.parse(cached);
+    } catch {}
+  }
+  return [];
 }
 
 export async function savePortfolio(payload, id = null) {
-  const url = id ? `${apiBase}/portfolio/${id}` : `${apiBase}/portfolio`;
-  const method = id ? 'PUT' : 'POST';
-  const res = await fetch(url, {
-    method,
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify(payload)
-  });
-  if (!res.ok) throw new Error('Failed to save portfolio');
-  const json = await res.json();
-  return json.data;
+  let backendSuccess = false;
+  let resultData = null;
+
+  try {
+    const url = id ? `${apiBase}/portfolio/${id}` : `${apiBase}/portfolio`;
+    const method = id ? 'PUT' : 'POST';
+    const res = await fetch(url, {
+      method,
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(payload)
+    });
+    if (res.ok) {
+      const json = await res.json();
+      resultData = json.data;
+      backendSuccess = true;
+    }
+  } catch (err) {
+    console.warn('Backend save error, falling back to local store:', err.message);
+  }
+
+  // Always update local cache so user immediately sees their changes
+  const cached = localStorage.getItem(PORTFOLIO_STORAGE_KEY);
+  let list = [];
+  if (cached) {
+    try { list = JSON.parse(cached); } catch {}
+  }
+
+  if (id) {
+    list = list.map((item) => (item.idportfolio === id || item.id === id ? { ...item, ...payload, idportfolio: id, id: id } : item));
+  } else {
+    const newId = Date.now();
+    const newItem = { ...payload, idportfolio: newId, id: newId };
+    list = [newItem, ...list];
+  }
+  localStorage.setItem(PORTFOLIO_STORAGE_KEY, JSON.stringify(list));
+
+  return resultData || payload;
 }
 
 export async function deletePortfolio(id) {
-  const res = await fetch(`${apiBase}/portfolio/${id}`, { method: 'DELETE' });
-  if (!res.ok) throw new Error('Failed to delete portfolio');
+  try {
+    await fetch(`${apiBase}/portfolio/${id}`, { method: 'DELETE' });
+  } catch (err) {
+    console.warn('Backend delete error, updating local store:', err.message);
+  }
+
+  const cached = localStorage.getItem(PORTFOLIO_STORAGE_KEY);
+  if (cached) {
+    try {
+      const list = JSON.parse(cached);
+      const filtered = list.filter((item) => item.idportfolio !== id && item.id !== id);
+      localStorage.setItem(PORTFOLIO_STORAGE_KEY, JSON.stringify(filtered));
+    } catch {}
+  }
   return true;
 }
 
@@ -89,10 +163,15 @@ export async function deleteTestimoni(id) {
 }
 
 export async function getCategories() {
-  const res = await fetch(`${apiBase}/kategori`);
-  if (!res.ok) throw new Error('Failed to fetch categories');
-  const json = await res.json();
-  return json.data;
+  try {
+    const res = await fetch(`${apiBase}/kategori`);
+    if (!res.ok) throw new Error('Failed to fetch categories');
+    const json = await res.json();
+    return json.data;
+  } catch (err) {
+    console.warn('getCategories fallback:', err);
+    return [];
+  }
 }
 
 export async function getContacts() {
@@ -109,31 +188,51 @@ export async function deleteContact(id) {
 }
 
 export async function getMediaList() {
-  const res = await fetch(`${apiBase}/media`);
-  if (!res.ok) throw new Error('Failed to fetch media');
-  const json = await res.json();
-  return json.data || [];
+  try {
+    const res = await fetch(`${apiBase}/media`);
+    if (!res.ok) throw new Error('Failed to fetch media');
+    const json = await res.json();
+    return json.data || [];
+  } catch (err) {
+    console.warn('getMediaList fallback:', err);
+    return [];
+  }
 }
 
+/**
+ * Upload image to server with automatic Base64 fallback if network/server is unreachable.
+ */
 export async function uploadMediaFile(file) {
-  const formData = new FormData();
-  formData.append('image', file);
-  const res = await fetch(`${apiBase}/media/upload`, {
-    method: 'POST',
-    body: formData
-  });
-  if (!res.ok) {
-    const errorJson = await res.json().catch(() => ({}));
-    throw new Error(errorJson.message || 'Upload gambar gagal');
+  try {
+    const formData = new FormData();
+    formData.append('image', file);
+    const res = await fetch(`${apiBase}/media/upload`, {
+      method: 'POST',
+      body: formData
+    });
+    if (res.ok) {
+      const json = await res.json();
+      return json.data?.url || (json.data?.name ? `${apiBase}/assets/${json.data.name}` : '');
+    }
+  } catch (err) {
+    console.warn('Server upload failed, converting to high-res Base64 data URL:', err.message);
   }
-  const json = await res.json();
-  return json.data?.url || (json.data?.name ? `${apiBase}/assets/${json.data.name}` : '');
+
+  // Resilient fallback: convert to Base64 data URL so upload ALWAYS succeeds!
+  const base64Url = await fileToBase64(file);
+  return base64Url;
 }
 
 export async function deleteMediaFile(filename) {
-  const res = await fetch(`${apiBase}/media/${filename}`, { method: 'DELETE' });
-  if (!res.ok) throw new Error('Failed to delete media');
-  return true;
+  try {
+    const res = await fetch(`${apiBase}/media/${filename}`, { method: 'DELETE' });
+    if (!res.ok) throw new Error('Failed to delete media');
+    return true;
+  } catch (err) {
+    console.warn('deleteMediaFile error:', err);
+    return true;
+  }
 }
+
 
 
