@@ -82,7 +82,7 @@ export const AdminMedia = () => {
           <div style={panelStyle}>Memuat media...</div>
         ) : items.map((item) => (
           <div key={item.name} style={panelStyle}>
-            <img src={`${apiBase}${item.url}`} alt={item.name} style={{ width: '100%', height: '180px', objectFit: 'cover', borderRadius: '12px', marginBottom: '12px' }} />
+            <img src={item.url} alt={item.name} style={{ width: '100%', height: '180px', objectFit: 'cover', borderRadius: '12px', marginBottom: '12px' }} />
             <div style={{ wordBreak: 'break-all', fontSize: '0.85rem', color: '#374151', marginBottom: '12px' }}>{item.name}</div>
             <div style={{ display: 'flex', justifyContent: 'flex-end' }}>
               <button onClick={() => handleDelete(item.name)} style={{ background: '#fee2e2', color: '#991b1b', borderRadius: '10px', padding: '8px 12px', fontWeight: 700, cursor: 'pointer' }}>
