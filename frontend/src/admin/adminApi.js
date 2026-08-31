@@ -87,3 +87,31 @@ export async function deleteTestimoni(id) {
   if (!res.ok) throw new Error('Failed to delete testimonial');
   return true;
 }
+
+export async function getCategories() {
+  const res = await fetch(`${apiBase}/kategori`);
+  if (!res.ok) throw new Error('Failed to fetch categories');
+  const json = await res.json();
+  return json.data;
+}
+
+export async function getContacts() {
+  const res = await fetch(`${apiBase}/contact`);
+  if (!res.ok) throw new Error('Failed to fetch contacts');
+  const json = await res.json();
+  return json.data;
+}
+
+export async function deleteContact(id) {
+  const res = await fetch(`${apiBase}/contact/${id}`, { method: 'DELETE' });
+  if (!res.ok) throw new Error('Failed to delete contact');
+  return true;
+}
+
+export async function getMediaList() {
+  const res = await fetch(`${apiBase}/media`);
+  if (!res.ok) throw new Error('Failed to fetch media');
+  const json = await res.json();
+  return json.data;
+}
+

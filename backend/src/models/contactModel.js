@@ -1,9 +1,10 @@
 const dbPool = require('../config/database');
 
 const getAllContacts = () => {
-    const SQLQuery = `  SELECT contact.*, kategori_layanan.kategori_layanan 
+    const SQLQuery = `  SELECT contact.*, contact.id AS id, kategori_layanan.kategori_layanan 
                         FROM contact 
-                        JOIN kategori_layanan ON contact.kategori = idkategori_layanan`;
+                        LEFT JOIN kategori_layanan ON contact.kategori = kategori_layanan.idkategori_layanan
+                        ORDER BY contact.id DESC`;
     return dbPool.execute(SQLQuery);
 }
 
@@ -35,4 +36,4 @@ module.exports = {
     createNewContact,
     updateContact,
     deleteContact,
-}
+}

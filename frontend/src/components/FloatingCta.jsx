@@ -1,11 +1,13 @@
 import React from 'react';
-import { Phone, MessageCircle } from 'lucide-react';
-import { siteConfig } from '../data/siteData';
+import { MessageCircle } from 'lucide-react';
+import { useSiteContext } from '../context/SiteContext';
 
 // Hero Section Floating Badge
 export const HeroFloatingBadge = () => {
+  const { getWaLink } = useSiteContext();
+
   const handleWaClick = () => {
-    window.open(`https://wa.me/${siteConfig.contacts.directWaNumber}?text=Halo%20Adinko%20%26%20GhaziSportsHub,%20saya%20ingin%20konsultasi%20pembuatan%20taman%20/%20lapangan%20olahraga`, '_blank');
+    window.open(getWaLink('Halo Adinko & GhaziSportsHub, saya ingin konsultasi pembuatan taman / lapangan olahraga'), '_blank');
   };
 
   return (
@@ -27,8 +29,10 @@ export const HeroFloatingBadge = () => {
 
 // Global Sticky WhatsApp Floating Button
 export const GlobalWhatsAppSticky = () => {
+  const { getWaLink } = useSiteContext();
+
   const handleWaClick = () => {
-    window.open(`https://wa.me/${siteConfig.contacts.directWaNumber}?text=Halo%20Adinko%20%26%20GhaziSportsHub,%20saya%20tertarik%20untuk%20konsultasi%20proyek`, '_blank');
+    window.open(getWaLink('Halo Adinko & GhaziSportsHub, saya tertarik untuk konsultasi proyek'), '_blank');
   };
 
   return (
@@ -44,3 +48,4 @@ export const GlobalWhatsAppSticky = () => {
     </div>
   );
 };
+

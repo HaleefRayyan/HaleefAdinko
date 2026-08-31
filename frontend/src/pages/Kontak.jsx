@@ -1,13 +1,16 @@
 import React from 'react';
-import { MapPin, Phone, MessageCircle, ArrowRight } from 'lucide-react';
+import { MapPin, Phone, MessageCircle, ArrowRight, Mail } from 'lucide-react';
 import { InstagramIcon } from '../assets/Icons';
 import { siteConfig } from '../data/siteData';
 import { ContactForm } from '../components/ContactForm';
 import { HeroFloatingBadge } from '../components/FloatingCta';
+import { useSiteContext } from '../context/SiteContext';
 
 export const Kontak = () => {
+  const { siteSettings, getWaLink } = useSiteContext();
+
   const handleWaHeroClick = () => {
-    window.open(`https://wa.me/${siteConfig.contacts.directWaNumber}?text=Halo%20Adinko%20%26%20GhaziSportsHub,%20saya%20ingin%20konsultasi%20langsung`, '_blank');
+    window.open(getWaLink('Halo Adinko & GhaziSportsHub, saya ingin konsultasi langsung untuk proyek'), '_blank');
   };
 
   return (
@@ -21,13 +24,13 @@ export const Kontak = () => {
         <div className="container">
           <div className="hero-content">
             <div className="hero-tag">
-              Respons dalam 1 Jam
+              Respons Cepat & Ramah
             </div>
             <h1 className="hero-title">
-              Hubungi Kami Kami Siap Membantu!
+              Hubungi Kami — Kami Siap Membantu!
             </h1>
             <p className="hero-subtitle">
-              Konsultasikan kebutuhan Anda sekarang juga. Tim kami siap membantu dari survei awal, perencanaan, pengerjaan, hingga purna jual.
+              Konsultasikan kebutuhan Anda sekarang juga. Tim kami siap membantu dari survei awal, perencanaan desain, pengerjaan instalasi, hingga garansi purna jual.
             </p>
             <div className="hero-actions">
               <button 
@@ -51,9 +54,9 @@ export const Kontak = () => {
           <div className="contact-grid">
             {/* Left Column: Hubungi Kami Details & Maps */}
             <div className="contact-info-card">
-              <span className="section-tag">CONTACT</span>
+              <span className="section-tag">KONTAK KAMI</span>
               <h2 style={{ fontSize: '1.8rem', fontWeight: 800, marginBottom: '24px' }}>
-                Hubungi Kami
+                Informasi Kantor & Workshop
               </h2>
 
               <div className="contact-item">
@@ -62,7 +65,7 @@ export const Kontak = () => {
                 </div>
                 <div>
                   <div className="contact-item-title">Alamat</div>
-                  <div className="contact-item-text">{siteConfig.contacts.address}</div>
+                  <div className="contact-item-text">{siteSettings.address || siteConfig.contacts.address}</div>
                 </div>
               </div>
 
@@ -71,14 +74,24 @@ export const Kontak = () => {
                   <Phone size={20} />
                 </div>
                 <div>
-                  <div className="contact-item-title">WhatsApp</div>
+                  <div className="contact-item-title">WhatsApp & Telepon</div>
                   <div className="contact-item-text">
-                    <div>{siteConfig.contacts.whatsappAdinko} (Adinko)</div>
-                    <div>{siteConfig.contacts.whatsappAdinko2}</div>
-                    <div>{siteConfig.contacts.whatsappGhazi} (GhaziSportsHub)</div>
+                    <div>{siteSettings.whatsapp || siteConfig.contacts.whatsappAdinko} (Customer Service)</div>
                   </div>
                 </div>
               </div>
+
+              {siteSettings.email && (
+                <div className="contact-item">
+                  <div className="contact-icon-box">
+                    <Mail size={20} />
+                  </div>
+                  <div>
+                    <div className="contact-item-title">Email Resmi</div>
+                    <div className="contact-item-text">{siteSettings.email}</div>
+                  </div>
+                </div>
+              )}
 
               <div className="contact-item">
                 <div className="contact-icon-box">

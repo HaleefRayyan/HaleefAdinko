@@ -1,15 +1,15 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useMemo } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { ArrowRight, Star, MapPin, Phone, CheckCircle2, ChevronRight, Navigation } from 'lucide-react';
+import { ArrowRight, Star, MapPin, Phone, ChevronRight, Navigation, Mail } from 'lucide-react';
 import { InstagramIcon } from '../assets/Icons';
-import { siteConfig } from '../data/siteData';
+import { siteConfig, portfolioData as fallbackPortfolios, googleReviews } from '../data/siteData';
 import { FeatureCards } from '../components/FeatureCards';
 import { ProjectCard } from '../components/ProjectCard';
 import { ReviewCard } from '../components/ReviewCard';
 import { ContactForm } from '../components/ContactForm';
 import { HeroFloatingBadge } from '../components/FloatingCta';
 import { AdinkoLogo, GhaziLogo } from '../assets/Logos';
-import { googleReviews } from '../data/siteData';
+import { useSiteContext } from '../context/SiteContext';
 
 const FALLBACK_AVATARS = [
   'https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?auto=format&fit=crop&w=150&q=80',
@@ -21,9 +21,9 @@ const FALLBACK_AVATARS = [
 ];
 
 const normalizeCategory = (text = '') => {
-  const lower = text.toLowerCase();
+  const lower = String(text).toLowerCase();
 
-  if (lower.includes('lapangan') || lower.includes('futsal') || lower.includes('mini soccer') || lower.includes('soccer')) {
+  if (lower.includes('lapangan') || lower.includes('futsal') || lower.includes('mini soccer') || lower.includes('soccer') || lower.includes('padel') || lower.includes('tenis')) {
     return 'Lapangan Olahraga';
   }
   if (lower.includes('vertical') || lower.includes('garden')) {
@@ -33,9 +33,7 @@ const normalizeCategory = (text = '') => {
   return 'Rumput Sintetis';
 };
 
-const apiBase = import.meta.env.VITE_API_URL || '';
-
-const normalizeImageList = (value) => {
+const normalizeImageList = (value, apiBase) => {
   if (Array.isArray(value)) {
     return value.map((item) => item && String(item).trim()).filter(Boolean);
   }
@@ -48,7 +46,7 @@ const normalizeImageList = (value) => {
       return parsed.map((item) => item && String(item).trim()).filter(Boolean);
     }
   } catch {
-    // ignore invalid JSON
+    // not json
   }
 
   return value
@@ -60,93 +58,107 @@ const normalizeImageList = (value) => {
 
 export const Home = () => {
   const navigate = useNavigate();
+  const { siteSettings, homeSettings, categories, apiBase } = useSiteContext();
+
   const [projects, setProjects] = useState([]);
   const [testimonials, setTestimonials] = useState([]);
   const [activeFilter, setActiveFilter] = useState('Semua');
   const [loading, setLoading] = useState(true);
   const [loadingTestimonials, setLoadingTestimonials] = useState(true);
 
+  // Fetch live portfolios with fallback
   useEffect(() => {
     fetch(`${apiBase}/portfolio`)
       .then((response) => response.json())
       .then((json) => {
         const data = Array.isArray(json?.data) ? json.data : [];
 
-        const normalized = data.map((item) => {
-          const images = normalizeImageList(item.image_url);
-          const fallbackImage = 'https://images.unsplash.com/photo-1585320806297-9794b3e4eeae?auto=format&fit=crop&w=800&q=80';
+        if (data.length > 0) {
+          const normalized = data.map((item) => {
+            const images = normalizeImageList(item.image_url, apiBase);
+            const fallbackImage = 'https://images.unsplash.com/photo-1585320806297-9794b3e4eeae?auto=format&fit=crop&w=800&q=80';
 
-          return {
-            id: item.idportfolio || item.id,
-            title: item.nama_proyek || 'Project',
-            location: item.lokasi || 'Lokasi tidak tersedia',
-            category: item.kategori_layanan || 'Kategori',
-            description: item.deskripsi || '',
-            image: images[0] || fallbackImage,
-            images: images.length > 0 ? images : [fallbackImage]
-          };
-        });
-
-        setProjects(normalized);
+            return {
+              id: item.idportfolio || item.id,
+              title: item.nama_proyek || 'Project',
+              location: item.lokasi || 'Pekanbaru',
+              category: item.kategori_layanan || 'Rumput Sintetis',
+              description: item.deskripsi || '',
+              image: images[0] || fallbackImage,
+              images: images.length > 0 ? images : [fallbackImage]
+            };
+          });
+          setProjects(normalized);
+        } else {
+          // Fallback to initial project dataset
+          setProjects(fallbackPortfolios);
+        }
       })
       .catch((error) => {
-        console.error('Failed to fetch portfolio:', error);
-        setProjects([]);
+        console.warn('Failed to fetch dynamic portfolio, using fallback:', error.message);
+        setProjects(fallbackPortfolios);
       })
       .finally(() => setLoading(false));
 
-    const googleReviewSeed = (googleReviews || []).slice(0, 3).map((item, index) => ({
-      id: item.id || index + 1,
-      name: item.name || 'Klien',
-      time: item.time || 'Baru-baru ini',
-      rating: Number(item.rating) || 5,
-      text: item.text || '',
-      avatar: item.avatar || FALLBACK_AVATARS[index % FALLBACK_AVATARS.length],
-      category: normalizeCategory(item.category || item.text || ''),
-      source: item.source || 'Google Review'
-    }));
-
-    setTestimonials(googleReviewSeed);
-    setLoadingTestimonials(false);
-
+    // Fetch live testimonials with fallback
     fetch(`${apiBase}/testimoni`)
       .then((response) => response.json())
       .then((json) => {
         const data = Array.isArray(json?.data) ? json.data : [];
 
-        const normalized = data.slice(0, 3).map((item, index) => ({
-          id: item.id || index + 1,
-          name: item.nama_klien || 'Klien',
-          time: item.waktu || 'Baru-baru ini',
-          rating: Number(item.rating) || 5,
-          text: item.deskripsi || '',
-          avatar: FALLBACK_AVATARS[index % FALLBACK_AVATARS.length],
-          category: normalizeCategory(item.kategori_layanan || item.deskripsi || ''),
-          source: 'Customer Review'
-        }));
-
-        if (normalized.length > 0) {
-          setTestimonials(normalized.slice(0, 3));
+        if (data.length > 0) {
+          const normalized = data.slice(0, 3).map((item, index) => ({
+            id: item.id || item.idtestimoni || index + 1,
+            name: item.nama_klien || 'Klien',
+            time: item.waktu || 'Baru-baru ini',
+            rating: Number(item.rating) || 5,
+            text: item.deskripsi || '',
+            avatar: FALLBACK_AVATARS[index % FALLBACK_AVATARS.length],
+            category: normalizeCategory(item.kategori_layanan || item.deskripsi || ''),
+            source: 'Ulasan Pelanggan'
+          }));
+          setTestimonials(normalized);
+        } else {
+          setTestimonials((googleReviews || []).slice(0, 3));
         }
       })
       .catch((error) => {
-        console.error('Failed to fetch testimonials:', error);
+        console.warn('Failed to fetch dynamic testimonials, using fallback:', error.message);
+        setTestimonials((googleReviews || []).slice(0, 3));
       })
-      .finally(() => {
-        setLoadingTestimonials(false);
+      .finally(() => setLoadingTestimonials(false));
+  }, [apiBase]);
+
+  // Dynamic filter tabs
+  const filterTabs = useMemo(() => {
+    const list = ['Semua'];
+    if (categories && categories.length > 0) {
+      categories.forEach((cat) => {
+        if (cat.kategori_layanan && !list.includes(cat.kategori_layanan)) {
+          list.push(cat.kategori_layanan);
+        }
       });
-  }, []);
+    }
+    return list.slice(0, 7);
+  }, [categories]);
 
-  const filterTabs = ['Semua', 'Taman', 'Vertical Garden', 'Lapangan Futsal', 'Minisoccer', 'Olahraga Lainnya'];
+  const filteredProjects = useMemo(() => {
+    return projects.filter((item) => {
+      if (activeFilter === 'Semua') return true;
+      return item.category === activeFilter;
+    }).slice(0, 6);
+  }, [projects, activeFilter]);
 
-  const filteredProjects = projects.filter((item) => {
-    if (activeFilter === 'Semua') return true;
-    return item.category === activeFilter;
-  }).slice(0, 6);
+  // Average Rating
+  const averageRating = useMemo(() => {
+    if (!testimonials.length) return '5.0';
+    const total = testimonials.reduce((acc, curr) => acc + (Number(curr.rating) || 5), 0);
+    return (total / testimonials.length).toFixed(1);
+  }, [testimonials]);
 
   return (
     <div>
-      {/* 1. HERO SECTION */}
+      {/* 1. HERO SECTION (Dynamic from Home Settings) */}
       <section 
         className="hero-wrapper"
         style={{ backgroundImage: `url('https://images.unsplash.com/photo-1533473359331-0135ef1b58bf?auto=format&fit=crop&w=1800&q=80')` }}
@@ -155,20 +167,20 @@ export const Home = () => {
         <div className="container">
           <div className="hero-content">
             <div className="hero-tag">
-              {siteConfig.since}
+              {siteConfig.since || 'Pekanbaru Sejak 2019'}
             </div>
             <h1 className="hero-title">
-              Jasa Rumput Sintetis & Lapangan Olahraga Profesional Pekanbaru
+              {homeSettings.hero_title || 'Jasa Rumput Sintetis & Lapangan Olahraga Profesional Pekanbaru'}
             </h1>
             <p className="hero-subtitle">
-              Rumput sintetis berkualitas tinggi untuk kebutuhan taman & lapangan olahraga profesional Pekanbaru & Riau.
+              {homeSettings.hero_subtitle || 'Rumput sintetis berkualitas tinggi untuk kebutuhan taman & lapangan olahraga profesional Pekanbaru & Riau.'}
             </p>
             <div className="hero-actions">
               <button 
                 onClick={() => navigate('/kontak')} 
                 className="btn-primary-hero"
               >
-                <span>Konsultasi Gratis</span>
+                <span>{homeSettings.cta_primary || 'Konsultasi Gratis'}</span>
                 <span className="arrow-circle">
                   <ArrowRight size={14} />
                 </span>
@@ -177,7 +189,7 @@ export const Home = () => {
                 onClick={() => navigate('/portofolio')} 
                 className="btn-secondary-hero"
               >
-                <span>Lihat Portofolio</span>
+                <span>{homeSettings.cta_secondary || 'Lihat Portofolio'}</span>
                 <ChevronRight size={16} />
               </button>
             </div>
@@ -277,12 +289,14 @@ export const Home = () => {
         </div>
       </section>
 
-      {/* 4. INTERACTIVE FEATURE CARDS (001 - 004) */}
+      {/* 4. INTERACTIVE FEATURE CARDS (Dynamic Feature Title) */}
       <section className="interactive-features-section">
         <div className="container">
           <div className="text-center">
             <span className="section-tag">KEUNGGULAN KAMI</span>
-            <h2 className="section-title">Solusi Tepat untuk Hunian Anda</h2>
+            <h2 className="section-title">
+              {homeSettings.feature_title || 'Solusi Tepat untuk Hunian Anda'}
+            </h2>
             <p className="section-subtitle mx-auto">
               Kualitas pengerjaan presisi dengan jaminan kepuasan dan transparansi harga untuk setiap proyek Anda.
             </p>
@@ -304,14 +318,14 @@ export const Home = () => {
         </div>
       </section>
 
-      {/* 5. PORTOFOLIO / HASIL PEKERJAAN KAMI */}
+      {/* 5. PORTOFOLIO (Live Dynamic Portfolio Grid) */}
       <section style={{ padding: '80px 0', background: 'var(--white)' }}>
         <div className="container">
           <div className="text-center">
             <span className="section-tag">PORTOFOLIO</span>
             <h2 className="section-title">Hasil Pekerjaan Kami</h2>
             <p className="section-subtitle mx-auto">
-              Dokumentasi nyata instalasi rumput sintetis dan lapangan olahraga terbaik di Pekanbaru.
+              Dokumentasi nyata instalasi rumput sintetis dan lapangan olahraga terbaik di Pekanbaru & Riau.
             </p>
           </div>
 
@@ -350,7 +364,7 @@ export const Home = () => {
               onClick={() => navigate('/portofolio')} 
               className="btn-primary-hero"
             >
-              <span>Lihat lebih banyak proyek</span>
+              <span>Lihat semua {projects.length} proyek</span>
               <span className="arrow-circle">
                 <ArrowRight size={14} />
               </span>
@@ -359,7 +373,7 @@ export const Home = () => {
         </div>
       </section>
 
-      {/* 6. TESTIMONIALS SECTION (Dark Box Container) */}
+      {/* 6. TESTIMONIALS SECTION (Live Dynamic Testimonials) */}
       <section className="container">
         <div className="testimonials-dark-container">
           <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-end', flexWrap: 'wrap', gap: '20px' }}>
@@ -383,13 +397,13 @@ export const Home = () => {
               alignItems: 'center',
               gap: '10px'
             }}>
-              <span style={{ fontWeight: 800, fontSize: '1.2rem', color: '#FFFFFF' }}>5.0</span>
+              <span style={{ fontWeight: 800, fontSize: '1.2rem', color: '#FFFFFF' }}>{averageRating}</span>
               <div style={{ display: 'flex', gap: '2px', color: 'var(--gold-400)' }}>
                 {[...Array(5)].map((_, i) => (
                   <Star key={i} size={16} fill="var(--gold-400)" color="var(--gold-400)" />
                 ))}
               </div>
-              <span style={{ fontSize: '0.8rem', color: 'rgba(255,255,255,0.7)' }}>Google Reviews</span>
+              <span style={{ fontSize: '0.8rem', color: 'rgba(255,255,255,0.7)' }}>Rating Klien</span>
             </div>
           </div>
 
@@ -423,7 +437,9 @@ export const Home = () => {
                 display: 'inline-flex',
                 alignItems: 'center',
                 gap: '10px',
-                boxShadow: '0 4px 14px rgba(0,0,0,0.2)'
+                boxShadow: '0 4px 14px rgba(0,0,0,0.2)',
+                cursor: 'pointer',
+                border: 'none'
               }}
             >
               <span>Lihat Semua Testimoni</span>
@@ -435,13 +451,13 @@ export const Home = () => {
         </div>
       </section>
 
-      {/* 7. CONTACT & CONSULTATION FORM SECTION */}
+      {/* 7. CONTACT & CONSULTATION FORM SECTION (Dynamic Site Settings) */}
       <section className="contact-section">
         <div className="container">
           <div className="contact-grid">
             {/* Left Column: Contact Details & Google Maps */}
             <div className="contact-info-card">
-              <span className="section-tag">CONTACT</span>
+              <span className="section-tag">KONTAK KAMI</span>
               <h2 style={{ fontSize: '1.8rem', fontWeight: 800, marginBottom: '24px' }}>
                 Hubungi Kami
               </h2>
@@ -452,7 +468,7 @@ export const Home = () => {
                 </div>
                 <div>
                   <div className="contact-item-title">Alamat</div>
-                  <div className="contact-item-text">{siteConfig.contacts.address}</div>
+                  <div className="contact-item-text">{siteSettings.address || siteConfig.contacts.address}</div>
                 </div>
               </div>
 
@@ -461,14 +477,24 @@ export const Home = () => {
                   <Phone size={20} />
                 </div>
                 <div>
-                  <div className="contact-item-title">WhatsApp</div>
+                  <div className="contact-item-title">WhatsApp & Telepon</div>
                   <div className="contact-item-text">
-                    <div>{siteConfig.contacts.whatsappAdinko} (Adinko)</div>
-                    <div>{siteConfig.contacts.whatsappAdinko2}</div>
-                    <div>{siteConfig.contacts.whatsappGhazi} (GhaziSportsHub)</div>
+                    <div>{siteSettings.whatsapp || siteConfig.contacts.whatsappAdinko} (Customer Care)</div>
                   </div>
                 </div>
               </div>
+
+              {siteSettings.email && (
+                <div className="contact-item">
+                  <div className="contact-icon-box">
+                    <Mail size={20} />
+                  </div>
+                  <div>
+                    <div className="contact-item-title">Email</div>
+                    <div className="contact-item-text">{siteSettings.email}</div>
+                  </div>
+                </div>
+              )}
 
               <div className="contact-item">
                 <div className="contact-icon-box">
@@ -523,10 +549,11 @@ export const Home = () => {
             margin: '0 auto',
             lineHeight: 1.5
           }}>
-            Jangan tunda lagi wujudkan taman atau lapangan impian Anda bersama kami sekarang!
+            Jangan tunda lagi, wujudkan taman atau lapangan impian Anda bersama {siteSettings.site_name || 'Adinko & GhaziSportsHub'} sekarang!
           </p>
         </div>
       </section>
     </div>
   );
 };
+

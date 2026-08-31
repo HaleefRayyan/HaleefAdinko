@@ -1,7 +1,7 @@
 const dbPool = require('../config/database');
 
 const getAllTestimoni = () => {
-    const SQLQuery = 'SELECT * FROM testimoni';
+    const SQLQuery = 'SELECT testimoni.*, testimoni.id AS id FROM testimoni ORDER BY testimoni.id DESC';
     return dbPool.execute(SQLQuery);
 }
 
@@ -33,4 +33,4 @@ module.exports = {
     createNewTestimoni,
     updateTestimoni,
     deleteTestimoni,
-}
+}

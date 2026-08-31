@@ -1,23 +1,22 @@
 import React, { useEffect, useState } from 'react';
 import { getHomeSettings, updateHomeSettings } from './adminApi';
-
-const initialData = {
-  hero_title: 'Bangun ruang luar yang lebih indah dan fungsional',
-  hero_subtitle: 'Kita membantu Anda menghadirkan taman, lapangan, dan ruang olahraga yang modern, kuat, dan nyaman digunakan.',
-  cta_primary: 'Konsultasi Gratis',
-  cta_secondary: 'Lihat Portofolio',
-  feature_title: 'Layanan utama kami'
-};
+import { useSiteContext } from '../context/SiteContext';
 
 export const AdminHomeSettings = () => {
-  const [form, setForm] = useState(initialData);
-  const [loading, setLoading] = useState(true);
+  const { homeSettings, refreshSiteData } = useSiteContext();
+  const [form, setForm] = useState(homeSettings);
+  const [loading, setLoading] = useState(false);
+  const [submitting, setSubmitting] = useState(false);
+  const [message, setMessage] = useState('');
 
   useEffect(() => {
     const load = async () => {
       try {
+        setLoading(true);
         const data = await getHomeSettings();
-        setForm({ ...initialData, ...data });
+        if (data) {
+          setForm((prev) => ({ ...prev, ...data }));
+        }
       } catch (error) {
         console.error(error);
       } finally {
@@ -36,34 +35,65 @@ export const AdminHomeSettings = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
+      setSubmitting(true);
+      setMessage('');
       await updateHomeSettings(form);
-      alert('Home section berhasil diperbarui.');
+      setMessage('Konten halaman Home berhasil diperbarui! Perubahan langsung aktif di Beranda.');
+      if (refreshSiteData) {
+        await refreshSiteData();
+      }
     } catch (error) {
       console.error(error);
-      alert('Gagal memperbarui Home section.');
+      alert('Gagal memperbarui Home section: ' + error.message);
+    } finally {
+      setSubmitting(false);
     }
   };
 
   return (
     <div>
       <h2 style={pageTitle}>Kelola Halaman Home</h2>
-      <p style={pageSubtitle}>Ubah judul utama, CTA, dan konten landing page utama.</p>
+      <p style={pageSubtitle}>Ubah judul utama hero, subjudul, teks tombol CTA, dan judul section keunggulan di Beranda.</p>
+
+      {message && (
+        <div style={{ background: '#ecfdf5', color: '#065f46', border: '1px solid #a7f3d0', padding: '12px 16px', borderRadius: '12px', marginBottom: '20px', fontWeight: 600 }}>
+          ✓ {message}
+        </div>
+      )}
 
       {loading ? (
         <div style={{ background: '#fff', borderRadius: '18px', padding: '24px', boxShadow: '0 8px 24px rgba(0,0,0,0.05)' }}>Memuat data...</div>
       ) : (
-        <form onSubmit={handleSubmit} style={{ background: '#fff', borderRadius: '18px', padding: '22px', boxShadow: '0 8px 24px rgba(0,0,0,0.05)' }}>
+        <form onSubmit={handleSubmit} style={{ background: '#fff', borderRadius: '18px', padding: '24px', boxShadow: '0 8px 24px rgba(0,0,0,0.05)', border: '1px solid rgba(17,24,39,0.04)' }}>
           <div style={{ display: 'grid', gap: '18px' }}>
-            <Field label="Judul Hero" name="hero_title" value={form.hero_title} onChange={handleChange} />
-            <Field label="Subjudul Hero" name="hero_subtitle" value={form.hero_subtitle} onChange={handleChange} />
-            <Field label="CTA Utama" name="cta_primary" value={form.cta_primary} onChange={handleChange} />
-            <Field label="CTA Sekunder" name="cta_secondary" value={form.cta_secondary} onChange={handleChange} />
-            <Field label="Judul Feature" name="feature_title" value={form.feature_title} onChange={handleChange} />
+            <Field label="Judul Utama Hero (H1)" name="hero_title" value={form.hero_title || ''} onChange={handleChange} />
+            
+            <div>
+              <label style={labelStyle}>Subjudul Hero (Deskripsi)</label>
+              <textarea
+                name="hero_subtitle"
+                rows={2}
+                value={form.hero_subtitle || ''}
+                onChange={handleChange}
+                style={{ ...inputStyle, resize: 'vertical' }}
+              />
+            </div>
+
+            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(220px, 1fr))', gap: '16px' }}>
+              <Field label="Teks Tombol CTA Utama" name="cta_primary" value={form.cta_primary || ''} onChange={handleChange} />
+              <Field label="Teks Tombol CTA Sekunder" name="cta_secondary" value={form.cta_secondary || ''} onChange={handleChange} />
+            </div>
+
+            <Field label="Judul Bagian Keunggulan (Features)" name="feature_title" value={form.feature_title || ''} onChange={handleChange} />
           </div>
 
-          <div style={{ marginTop: '22px', display: 'flex', justifyContent: 'flex-end' }}>
-            <button type="submit" style={{ background: '#1d4d2d', color: '#fff', borderRadius: '12px', padding: '12px 18px', fontWeight: 700, cursor: 'pointer' }}>
-              Simpan Home Section
+          <div style={{ marginTop: '24px', display: 'flex', justifyContent: 'flex-end' }}>
+            <button
+              type="submit"
+              disabled={submitting}
+              style={{ background: '#1d4d2d', color: '#fff', borderRadius: '12px', padding: '12px 24px', fontWeight: 700, cursor: 'pointer', border: 'none', fontSize: '0.98rem' }}
+            >
+              {submitting ? 'Menyimpan...' : 'Simpan Perubahan Home'}
             </button>
           </div>
         </form>
@@ -72,18 +102,21 @@ export const AdminHomeSettings = () => {
   );
 };
 
+const labelStyle = { display: 'block', marginBottom: '8px', color: '#374151', fontWeight: 600, fontSize: '0.9rem' };
+const inputStyle = { width: '100%', padding: '12px 14px', border: '1px solid #d1d5db', borderRadius: '12px', fontSize: '0.95rem', boxSizing: 'border-box' };
+const pageTitle = { margin: 0, fontSize: '2rem', fontWeight: 800, color: '#111827' };
+const pageSubtitle = { margin: '8px 0 20px', color: '#6b7280' };
+
 const Field = ({ label, name, value, onChange }) => (
   <div>
-    <label style={{ display: 'block', marginBottom: '8px', color: '#374151', fontWeight: 600 }}>{label}</label>
+    <label style={labelStyle}>{label}</label>
     <input
       type="text"
       name={name}
       value={value}
       onChange={onChange}
-      style={{ width: '100%', padding: '12px 14px', border: '1px solid #d1d5db', borderRadius: '12px', boxSizing: 'border-box' }}
+      style={inputStyle}
     />
   </div>
 );
 
-const pageTitle = { margin: 0, fontSize: '2rem', fontWeight: 800, color: '#111827' };
-const pageSubtitle = { margin: '8px 0 20px', color: '#6b7280' };
